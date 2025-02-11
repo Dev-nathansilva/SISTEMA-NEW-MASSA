@@ -2,20 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* --------------------------- */
+
+/* FONTS */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+/* --------------------------- */
+
+a {
+  outline: none;
+  box-shadow: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.title-login {
+  color: #101828;
+  font-family: "Roboto";
+  font-size: 24px;
+  font-weight: 700;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.description-login {
+  color: #9b9b9b;
+  font-family: "Roboto";
+  font-size: 15px;
+  font-weight: 400;
+  margin-top: 5px;
+  margin-bottom: 30px;
+}
+
+.input-padrao {
+  border-radius: 10px;
+  background: #f2f4f7;
+  margin-top: 0px;
+  padding: 10px 0;
+}
+
+#group-actions {
+  border-top: 1px solid #acacac7c;
+  padding: 20px 0;
+  margin-top: 30px;
+}
+
+.remember-me {
+  color: #9c9c9c;
+  font-family: "Roboto";
+  font-weight: 400;
+}
+
+.rodape-text {
+  color: #6b6b6b;
+}
+
+/* Cor de fundo do autocomplete */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 30px #f2f4f7 inset;
+}
+/* Cor do texto do autocomplete */
+input:-webkit-autofill {
+  -webkit-text-fill-color: rgb(0, 0, 0) !important;
+}
+
+.input-error {
+  outline: 1px solid red !important;
 }

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { Button, HStack } from "@chakra-ui/react";
+import Image from "next/image";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -22,7 +24,7 @@ export default function Home() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setUser(res.data);
+        setUser(res.data.user);
       })
       .catch(() => {
         Cookies.remove("token");
@@ -46,6 +48,11 @@ export default function Home() {
       >
         Sair
       </button>
+
+      <HStack>
+        <Button>Click me</Button>
+        <Button>Click me</Button>
+      </HStack>
     </div>
   );
 }
