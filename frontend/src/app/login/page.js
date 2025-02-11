@@ -13,6 +13,7 @@ import {
   Text,
   Button,
   ButtonGroup,
+  Icon,
 } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { LuUser } from "react-icons/lu";
@@ -24,6 +25,7 @@ import { Switch } from "@/components/ui/switch";
 import { TbLogin2 } from "react-icons/tb";
 import { useForm } from "react-hook-form";
 import { Tooltip } from "@/components/ui/tooltip";
+import Spinner from "@/components/Spinner";
 
 export default function Login() {
   // const [email, setEmail] = useState("");
@@ -89,7 +91,7 @@ export default function Login() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Field label="">
               <InputGroup
-                className="w-full flex items-center"
+                className="w-full flex items-center "
                 flex="1"
                 startElement={<LuUser className="text-lg" />}
               >
@@ -147,8 +149,9 @@ export default function Login() {
               variant="solid"
               loading={isSubmitting}
               loadingText="Acessando..."
+              spinner={<Spinner />}
             >
-              Acessar <TbLogin2 className="mt-1" />
+              Acessar <TbLogin2 className="mt-[3px]" />
             </Button>
 
             <Flex justify="space-between" align="center" id="group-actions">
@@ -187,18 +190,6 @@ export default function Login() {
             </Text>
           </Box>
         </div>
-
-        {/* <Link
-          className="absolute top-4 right-9 bg-[#F3F3F3] hover:bg-[#E3E3E3] p-4 rounded-xl border border-gray-400"
-          href="/motoristas"
-        >
-          <Image
-            src="/caminhao.svg"
-            alt="Acesso dos motoristas"
-            height={37}
-            width={37}
-          />
-        </Link> */}
 
         <Tooltip
           showArrow
