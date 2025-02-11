@@ -120,7 +120,7 @@ export default function Login() {
               <InputGroup
                 className="w-full flex items-center"
                 flex="1"
-                startElement={<FaLock className="text-lg" />}
+                startElement={<FaLock className="text-md" />}
               >
                 <PasswordInput
                   className={`input-padrao flex-1 ${
@@ -200,17 +200,26 @@ export default function Login() {
           />
         </Link> */}
 
-        <Link
-          className="absolute top-4 right-9 bg-[#F3F3F3] hover:bg-[#E3E3E3] p-4 rounded-xl border border-gray-400"
-          href="/motoristas"
+        <Tooltip
+          showArrow
+          delay={0}
+          openDelay={0}
+          closeDelay={200}
+          content="Acesso dos Motoristas"
+          contentProps={{ css: { "--tooltip-bg": "black" } }}
         >
-          <Image
-            src="/caminhao.svg"
-            alt="Acesso dos motoristas"
-            height={37}
-            width={37}
-          />
-        </Link>
+          <Link
+            className="absolute top-4 right-9 bg-[#F3F3F3] hover:bg-[#E3E3E3] p-4 rounded-xl border border-gray-400"
+            href="/motoristas"
+          >
+            <Image
+              src="/caminhao.svg"
+              alt="Acesso dos motoristas"
+              height={37}
+              width={37}
+            />
+          </Link>
+        </Tooltip>
 
         {error && (
           <Alert.Root
