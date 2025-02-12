@@ -19,7 +19,7 @@ const authenticateUser = async (email, password) => {
   if (!isValid) throw new Error("Senha incorreta!");
 
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
-  return { token, user: { id: user.id, name: user.name, email: user.email } };
+  return { token, user: { name: user.name } };
 };
 
 module.exports = {

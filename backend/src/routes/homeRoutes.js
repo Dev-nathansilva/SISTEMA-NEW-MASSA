@@ -20,6 +20,7 @@ router.get("/home", authenticateToken, async (req, res) => {
       user: {
         userId: user.id,
         name: user.name,
+        email: user.email,
       },
     });
   } catch (error) {

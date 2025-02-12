@@ -14,6 +14,7 @@ import {
   Button,
   ButtonGroup,
   Icon,
+  IconButton,
 } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { LuUser } from "react-icons/lu";
@@ -26,19 +27,23 @@ import { TbLogin2 } from "react-icons/tb";
 import { useForm } from "react-hook-form";
 import { Tooltip } from "@/components/ui/tooltip";
 import Spinner from "@/components/Spinner";
+import { FaTrash } from "react-icons/fa";
 
 export default function Login() {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
-
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [savedUser, setSavedUser] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const savedUsers = JSON.parse(localStorage.getItem("savedUsers")) || [];
+    setSavedUser(savedUsers);
+  }, []);
 
   const onSubmit = async (data) => {
     setError("");
@@ -53,28 +58,63 @@ export default function Login() {
       );
       // Salva o token no cookie
       Cookies.set("token", res.data.token, { expires: 1 });
+
+      console.log("estado do switch:", rememberMe);
+      console.log("res-data:", res.data.user.name);
+
+      if (rememberMe) {
+        const newUser = { name: res.data.user.name, token: res.data.token };
+        const savedUsers = new Map(
+          JSON.parse(localStorage.getItem("savedUsers"))?.map((user) => [
+            user.token,
+            user,
+          ]) || []
+        );
+        savedUsers.set(newUser.token, newUser);
+        const updatedUsers = Array.from(savedUsers.values());
+        localStorage.setItem("savedUsers", JSON.stringify(updatedUsers));
+        setSavedUser(updatedUsers);
+      }
+
       router.push("/");
     } catch (err) {
       setError(err.response?.data?.error || "Erro ao fazer login");
     }
   };
 
-  // Limpar o erro após 5 segundos
+  const deleteUser = (userToDelete) => {
+    const savedUsers = new Map(
+      JSON.parse(localStorage.getItem("savedUsers"))?.map((user) => [
+        user.token,
+        user,
+      ]) || []
+    );
+    savedUsers.delete(userToDelete.token);
+    const updatedUsers = Array.from(savedUsers.values());
+    localStorage.setItem("savedUsers", JSON.stringify(updatedUsers));
+    setSavedUser(updatedUsers);
+  };
+
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
-        setError(""); // Limpa o erro após 5 segundos
+        setError("");
       }, 2000);
 
-      return () => clearTimeout(timer); // Limpa o timer se o componente for desmontado
+      return () => clearTimeout(timer);
     }
   }, [error]);
+
+  const autoLogin = async (token) => {
+    Cookies.set("token", token, { expires: 1 });
+    router.push("/");
+  };
 
   return (
     <div className=" flex min-h-screen w-full">
       <div className="w-[60%]">
         <Image
-          src="/banner-newmassa.jpg" // Caminho correto a partir da pasta "public"
+          src="/banner-newmassa.jpg"
           alt="Descrição da imagem"
           width={2112}
           height={2080}
@@ -156,7 +196,12 @@ export default function Login() {
 
             <Flex justify="space-between" align="center" id="group-actions">
               <Flex align="center">
-                <Switch id="remember-me" className="mt-[2px]" />
+                <Switch
+                  id="remember-me"
+                  className="mt-[2px]"
+                  checked={rememberMe}
+                  onCheckedChange={(e) => setRememberMe(e.checked)}
+                />
                 <Text className="remember-me" ml={2}>
                   Lembrar de mim
                 </Text>
@@ -166,6 +211,39 @@ export default function Login() {
               </Link>
             </Flex>
           </form>
+
+          {savedUser && savedUser.length > 0 && (
+            <div>
+              {savedUser.map((user) => (
+                <div
+                  key={user.token}
+                  className="flex justify-between cursor-pointer p-4 border rounded-lg mt-4 bg-[#F9FAFB] hover:bg-gray-200 transition"
+                >
+                  <Flex align="center">
+                    <HiUser className="text-xl mr-2" />
+                    <Text fontSize="lg">
+                      <span className="text-[#9d9d9d] mr-1">Conta:</span>{" "}
+                      {user.name}
+                    </Text>
+                  </Flex>
+
+                  <Button
+                    className="p-4"
+                    variant="ghost" // Usando um botão transparente
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Impede que o clique no ícone dispare o login
+                      deleteUser(user); // Chama a função para deletar o usuário
+                    }}
+                    aria-label="Excluir usuário" // Descrição para acessibilidade
+                  >
+                    <FaTrash className="text-red-500 " />{" "}
+                    {/* Ícone da lixeira com cor vermelha */}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
 
           <Box
             mt={4}
