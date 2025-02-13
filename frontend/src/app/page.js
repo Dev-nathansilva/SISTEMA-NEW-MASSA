@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import axios from "axios";
+import LogoutButton from "@/components/LogoutButton";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -22,9 +23,7 @@ export default async function Home() {
         <h2>Bem-vindo {user?.name}!</h2>
         <p>{user?.email}</p>
 
-        <form action="/api/logout" method="POST">
-          <button type="submit">Sair</button>
-        </form>
+        <LogoutButton />
       </div>
     );
   } catch (error) {
