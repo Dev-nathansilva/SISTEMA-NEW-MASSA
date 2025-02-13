@@ -12,4 +12,8 @@ app.use("/api", userRoutes);
 
 app.use("/api", homeRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Backend rodando corretamente!");
+});
+
 module.exports = app;
