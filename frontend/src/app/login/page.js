@@ -18,6 +18,8 @@ import { Tooltip } from "@/components/ui/tooltip";
 import Spinner from "@/components/Spinner";
 import { FaTrash } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa";
+import SavedAccounts from "@/components/SavedAccounts";
+import LoginForm from "@/components/LoginForm";
 
 export default function Login() {
   const {
@@ -142,157 +144,22 @@ export default function Login() {
             </div>
           ) : savedUser.length > 0 && !showLoginForm ? (
             // Se houver contas salvas e showLoginForm for false, exibe a lista de usuários
-            <div>
-              <h2 className="title-login">Fazer Login</h2>
-              <p className="description-login">
-                selecione uma de suas contas salvas
-              </p>
-              {savedUser.map((user) => (
-                <div
-                  key={user.token}
-                  onClick={() => autoLogin(user.token)}
-                  className="flex justify-between cursor-pointer p-4 border rounded-lg mt-4 bg-[#F9FAFB] hover:bg-gray-200 transition"
-                >
-                  <Flex align="center">
-                    <Image
-                      width={512}
-                      height={512}
-                      src="/images-perfil/foto-perfil-anonima.png"
-                      alt="Foto de perfil"
-                      className="w-10 h-10 rounded-full mr-2"
-                    />
-                    <Text fontSize="lg">
-                      <span className="text-[#9d9d9d] ml-1">Conta:</span>{" "}
-                      {user.name}
-                    </Text>
-                  </Flex>
-                  <Button
-                    className="p-4"
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteUser(user);
-                    }}
-                    aria-label="Excluir usuário"
-                  >
-                    <FaTrash className="text-red-500" />
-                  </Button>
-                </div>
-              ))}
-
-              {/* Botão para alternar para a tela de login */}
-              <Button
-                className="mt-4 w-full bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition"
-                onClick={() => setShowLoginForm(true)}
-              >
-                Fazer login com outra conta
-              </Button>
-            </div>
+            <SavedAccounts
+              savedUser={savedUser}
+              autoLogin={autoLogin}
+              deleteUser={deleteUser}
+              setShowLoginForm={setShowLoginForm}
+            />
           ) : (
             // Se não houver contas salvas ou showLoginForm for true, exibe o formulário de login
-            <>
-              <h2 className="title-login">Login</h2>
-              <p className="description-login">
-                Por favor, preencha as informações abaixo.
-              </p>
-
-              {savedUser.length > 0 && (
-                <Button
-                  variant="outline"
-                  className=" absolute top-5 left-5 bg-[#f9f9f9] hover:bg-[#eee] p-3 rounded-xl"
-                  onClick={() => setShowLoginForm(false)}
-                >
-                  <FaAngleLeft />
-                  Voltar
-                </Button>
-              )}
-
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <Field label="">
-                  <InputGroup
-                    className="w-full flex items-center"
-                    flex="1"
-                    startElement={<LuUser className="text-lg" />}
-                  >
-                    <Input
-                      className={`input-padrao flex-1 ${
-                        errors.email ? "input-error" : ""
-                      }`}
-                      placeholder="Usuário"
-                      size="lg"
-                      type="email"
-                      {...register("email", {
-                        required: "O email é obrigatório",
-                        pattern: {
-                          value:
-                            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                          message: "Formato de email inválido",
-                        },
-                      })}
-                    />
-                  </InputGroup>
-                  {errors.email && (
-                    <Text color="red.500" fontSize="sm">
-                      {errors.email.message}
-                    </Text>
-                  )}
-                </Field>
-
-                <Field label="">
-                  <InputGroup
-                    className="w-full flex items-center"
-                    flex="1"
-                    startElement={<FaLock className="text-md" />}
-                  >
-                    <PasswordInput
-                      className={`input-padrao flex-1 ${
-                        errors.password ? "input-error" : ""
-                      }`}
-                      placeholder="Senha"
-                      size="lg"
-                      {...register("password", {
-                        required: "A senha é obrigatória",
-                      })}
-                    />
-                  </InputGroup>
-                  {errors.password && (
-                    <Text color="red.500" fontSize="sm">
-                      {errors.password.message}
-                    </Text>
-                  )}
-                </Field>
-
-                <Button
-                  type="submit"
-                  size="xl"
-                  className="w-full bg-[#1570EF] text-white rounded hover:bg-blue-700"
-                  variant="solid"
-                  loading={isSubmitting}
-                  loadingText="Acessando..."
-                  spinner={<Spinner />}
-                >
-                  Acessar <TbLogin2 className="mt-[3px]" />
-                </Button>
-
-                <Flex justify="space-between" align="center" id="group-actions">
-                  <Flex align="center">
-                    <Switch
-                      id="remember-me"
-                      className="mt-[2px]"
-                      checked={rememberMe}
-                      onCheckedChange={(e) => setRememberMe(e.checked)}
-                    />
-                    <Text className="remember-me" ml={2}>
-                      Lembrar de mim
-                    </Text>
-                  </Flex>
-                  <Link href="/esqueci-minha-senha" color="blue.500">
-                    Esqueci minha senha
-                  </Link>
-                </Flex>
-              </form>
-            </>
+            <LoginForm
+              onSubmit={onSubmit}
+              isSubmitting={isSubmitting}
+              rememberMe={rememberMe}
+              setRememberMe={setRememberMe}
+              savedUser={savedUser}
+              setShowLoginForm={setShowLoginForm}
+            />
           )}
 
           <Box
