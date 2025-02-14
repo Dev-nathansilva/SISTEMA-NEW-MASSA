@@ -161,7 +161,6 @@ export default function Login() {
           ) : (
             <LoginForm
               onSubmit={onSubmit}
-              isSubmitting={isSubmitting}
               rememberMe={rememberMe}
               setRememberMe={setRememberMe}
               savedUser={savedUser}

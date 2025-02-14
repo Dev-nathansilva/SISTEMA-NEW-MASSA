@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch";
 
 const LoginForm = ({
   onSubmit,
-  isSubmitting,
   rememberMe,
   setRememberMe,
   savedUser,
@@ -23,7 +22,7 @@ const LoginForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   return (
