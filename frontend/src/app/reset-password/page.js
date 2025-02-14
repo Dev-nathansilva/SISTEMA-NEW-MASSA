@@ -1,6 +1,6 @@
-"use client"; // Garantindo que o Next.js saiba que este componente é de Client-Side
+"use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Box, Button, Text, Flex, Alert } from "@chakra-ui/react";
