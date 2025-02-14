@@ -20,6 +20,7 @@ import { FaTrash } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa";
 import SavedAccounts from "@/components/SavedAccounts";
 import LoginForm from "@/components/LoginForm";
+import PasswordResetForm from "@/components/PasswordResetForm";
 
 export default function Login() {
   const {
@@ -32,6 +33,7 @@ export default function Login() {
   const [savedUser, setSavedUser] = useState([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showPasswordResetForm, setShowPasswordResetForm] = useState(false);
 
   const router = useRouter();
 
@@ -142,16 +144,21 @@ export default function Login() {
             <div className="flex justify-center">
               <Spinner />
             </div>
-          ) : savedUser.length > 0 && !showLoginForm ? (
-            // Se houver contas salvas e showLoginForm for false, exibe a lista de usuários
+          ) : savedUser.length > 0 &&
+            !showLoginForm &&
+            !showPasswordResetForm ? (
             <SavedAccounts
               savedUser={savedUser}
               autoLogin={autoLogin}
               deleteUser={deleteUser}
               setShowLoginForm={setShowLoginForm}
             />
+          ) : showPasswordResetForm ? (
+            <PasswordResetForm
+              setShowLoginForm={setShowLoginForm}
+              setShowPasswordResetForm={setShowPasswordResetForm}
+            />
           ) : (
-            // Se não houver contas salvas ou showLoginForm for true, exibe o formulário de login
             <LoginForm
               onSubmit={onSubmit}
               isSubmitting={isSubmitting}
@@ -159,6 +166,7 @@ export default function Login() {
               setRememberMe={setRememberMe}
               savedUser={savedUser}
               setShowLoginForm={setShowLoginForm}
+              setShowPasswordResetForm={setShowPasswordResetForm}
             />
           )}
 

@@ -18,6 +18,7 @@ const LoginForm = ({
   setRememberMe,
   savedUser,
   setShowLoginForm,
+  setShowPasswordResetForm,
 }) => {
   const {
     register,
@@ -121,7 +122,7 @@ const LoginForm = ({
               Lembrar de mim
             </Text>
           </Flex>
-          <Link href="/esqueci-minha-senha" color="blue.500">
+          <Link color="blue.500" onClick={() => setShowPasswordResetForm(true)}>
             Esqueci minha senha
           </Link>
         </Flex>
