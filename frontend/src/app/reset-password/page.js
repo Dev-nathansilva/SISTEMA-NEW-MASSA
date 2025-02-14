@@ -35,7 +35,10 @@ function ResetPasswordContent() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
     const checkTokenValidity = async () => {
       try {
