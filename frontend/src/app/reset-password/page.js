@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Box, Button, Text, Flex, Alert } from "@chakra-ui/react";
@@ -12,11 +12,11 @@ import Spinner from "@/components/Spinner";
 import { useForm } from "react-hook-form";
 import { FiAlertOctagon } from "react-icons/fi";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [token, setToken] = useState(null);
 
-  const [token, setToken] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -30,16 +30,14 @@ export default function ResetPasswordPage() {
   } = useForm();
 
   useEffect(() => {
-    const tokenFromUrl = searchParams.get("token");
-    if (tokenFromUrl) {
-      setToken(tokenFromUrl);
-    }
+    const urlToken = searchParams.get("token");
+    setToken(urlToken);
   }, [searchParams]);
 
   useEffect(() => {
-    const checkTokenValidity = async () => {
-      if (!token) return;
+    if (!token) return;
 
+    const checkTokenValidity = async () => {
       try {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/check-token`, {
           token,
@@ -49,7 +47,9 @@ export default function ResetPasswordPage() {
         setErrorMessage("Token expirado ou inválido. Você será redirecionado.");
         setIsSpinnerMessage(true);
         setIsTokenValid(false);
-        setTimeout(() => router.push("/login"), 1000);
+        setTimeout(() => {
+          router.push("/login");
+        }, 1000);
       }
     };
 
@@ -57,7 +57,10 @@ export default function ResetPasswordPage() {
   }, [token, router]);
 
   const onSubmit = async (data) => {
+    if (!token) return;
+
     const { newPassword, confirmPassword } = data;
+
     setErrorMessage("");
     setSuccessMessage("");
 
@@ -97,6 +100,7 @@ export default function ResetPasswordPage() {
           position="absolute"
           width="auto"
           zIndex="9999"
+          style={{ left: "50%", transform: "translateX(-50%)", top: "30px" }}
         >
           <Alert.Indicator>
             {isSpinnerMessage && <Spinner size="sm" />}
@@ -118,7 +122,6 @@ export default function ResetPasswordPage() {
           className="object-cover w-full h-screen"
         />
       </div>
-
       <div className="w-[40%] flex items-center justify-center p-8 relative">
         <div className="max-w-sm w-full">
           <h2 className="title-login">Redefinir Senha</h2>
@@ -126,7 +129,7 @@ export default function ResetPasswordPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Field label="Nova Senha">
-              <InputGroup className="w-full flex items-center">
+              <InputGroup className="w-full flex items-center" flex="1">
                 <PasswordInput
                   className={`input-padrao flex-1 ${
                     errors.newPassword ? "input-error" : ""
@@ -151,7 +154,7 @@ export default function ResetPasswordPage() {
             </Field>
 
             <Field label="Confirme a Nova Senha">
-              <InputGroup className="w-full flex items-center">
+              <InputGroup className="w-full flex items-center" flex="1">
                 <PasswordInput
                   className={`input-padrao flex-1 ${
                     errors.confirmPassword ? "input-error" : ""
@@ -179,6 +182,7 @@ export default function ResetPasswordPage() {
               type="submit"
               size="xl"
               className="w-full bg-[#1570EF] text-white rounded hover:bg-blue-700"
+              variant="solid"
               isLoading={isSubmitting}
               loadingText="Redefinindo..."
               spinner={<Spinner />}
@@ -186,8 +190,68 @@ export default function ResetPasswordPage() {
               Redefinir Senha
             </Button>
           </form>
+
+          {successMessage && (
+            <Alert.Root
+              status="success"
+              position="absolute"
+              width="auto"
+              zIndex="9999"
+              style={{
+                left: "50%",
+                transform: "translateX(-50%)",
+                top: "30px",
+              }}
+            >
+              <Alert.Indicator>
+                {isSpinnerMessage && <Spinner size="sm" />}
+              </Alert.Indicator>
+              <Alert.Title>{successMessage}</Alert.Title>
+            </Alert.Root>
+          )}
+
+          {errorMessage && (
+            <Alert.Root
+              status="error"
+              position="absolute"
+              width="auto"
+              zIndex="9999"
+              style={{
+                left: "50%",
+                transform: "translateX(-50%)",
+                top: "30px",
+              }}
+            >
+              <Alert.Indicator>
+                {!isSpinnerMessage && (
+                  <Box
+                    as="span"
+                    className="chakra-alert__icon"
+                    role="img"
+                    aria-label="Error icon"
+                  >
+                    <FiAlertOctagon />
+                  </Box>
+                )}
+                {isSpinnerMessage && <Spinner size="sm" />}
+              </Alert.Indicator>
+              <Alert.Title>{errorMessage}</Alert.Title>
+            </Alert.Root>
+          )}
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen w-full items-center justify-center"></div>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
