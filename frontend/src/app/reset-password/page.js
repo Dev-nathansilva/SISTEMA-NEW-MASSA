@@ -16,12 +16,11 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [token, setToken] = useState(null);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [isTokenValid, setIsTokenValid] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSpinnerMessage, setIsSpinnerMessage] = useState(false);
-  const [isTokenValid, setIsTokenValid] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const {
     register,
@@ -31,22 +30,18 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     const urlToken = searchParams.get("token");
-    setToken(urlToken);
 
     if (!urlToken) {
-      setErrorMessage("Token expirado ou inválido. Você será redirecionado.");
-      setIsSpinnerMessage(true);
-      setIsTokenValid(false);
-      setTimeout(() => {
-        router.push("/login");
-      }, 1000);
+      router.replace("/login");
       return;
     }
+
+    setToken(urlToken);
 
     const checkTokenValidity = async () => {
       try {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/check-token`, {
-          token,
+          token: urlToken,
         });
         setIsTokenValid(true);
       } catch (error) {
@@ -54,21 +49,59 @@ function ResetPasswordContent() {
         setIsSpinnerMessage(true);
         setIsTokenValid(false);
         setTimeout(() => {
-          router.push("/login");
+          router.replace("/login");
         }, 1000);
       }
     };
 
     checkTokenValidity();
-  }, [token, router, searchParams]);
+  }, [searchParams, router]);
+
+  if (isTokenValid === false) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center">
+        {errorMessage && (
+          <Alert.Root
+            status="error"
+            position="absolute"
+            width="auto"
+            zIndex="9999"
+            style={{
+              left: "50%",
+              transform: "translateX(-50%)",
+              top: "30px",
+            }}
+          >
+            <Alert.Indicator>
+              {!isSpinnerMessage && (
+                <Box
+                  as="span"
+                  className="chakra-alert__icon"
+                  role="img"
+                  aria-label="Error icon"
+                >
+                  <FiAlertOctagon />
+                </Box>
+              )}
+              {isSpinnerMessage && <Spinner size="sm" />}
+            </Alert.Indicator>
+            <Alert.Title>{errorMessage}</Alert.Title>
+          </Alert.Root>
+        )}
+      </div>
+    );
+  }
+
+  if (isTokenValid === null) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center"></div>
+    );
+  }
 
   const onSubmit = async (data) => {
     if (!token) return;
 
     const { newPassword, confirmPassword } = data;
-
-    setErrorMessage("");
-    setSuccessMessage("");
 
     if (newPassword !== confirmPassword) {
       setErrorMessage("As senhas não coincidem.");
@@ -80,42 +113,24 @@ function ResetPasswordContent() {
       setIsSubmitting(true);
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/reset-password`,
-        { token, newPassword }
+        {
+          token,
+          newPassword,
+        }
       );
+
       setSuccessMessage("Senha redefinida com sucesso! Redirecionando...");
       setIsSpinnerMessage(true);
-      setTimeout(() => router.push("/login"), 2000);
+
+      setTimeout(() => {
+        router.replace("/login");
+      }, 2000);
     } catch (error) {
       setErrorMessage("Erro ao redefinir a senha.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (isTokenValid === null) {
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center"></div>
-    );
-  }
-
-  if (isTokenValid === false) {
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center">
-        <Alert.Root
-          status="error"
-          position="absolute"
-          width="auto"
-          zIndex="9999"
-          style={{ left: "50%", transform: "translateX(-50%)", top: "30px" }}
-        >
-          <Alert.Indicator>
-            {isSpinnerMessage && <Spinner size="sm" />}
-          </Alert.Indicator>
-          <Alert.Title>{errorMessage}</Alert.Title>
-        </Alert.Root>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen w-full">
@@ -189,7 +204,7 @@ function ResetPasswordContent() {
               size="xl"
               className="w-full bg-[#1570EF] text-white rounded hover:bg-blue-700"
               variant="solid"
-              isLoading={isSubmitting}
+              loading={isSubmitting}
               loadingText="Redefinindo..."
               spinner={<Spinner />}
             >
