@@ -32,11 +32,14 @@ function ResetPasswordContent() {
   useEffect(() => {
     const urlToken = searchParams.get("token");
     setToken(urlToken);
-  }, [searchParams]);
 
-  useEffect(() => {
-    if (!token) {
-      router.push("/login");
+    if (!urlToken) {
+      setErrorMessage("Token expirado ou inválido. Você será redirecionado.");
+      setIsSpinnerMessage(true);
+      setIsTokenValid(false);
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
       return;
     }
 
@@ -57,7 +60,7 @@ function ResetPasswordContent() {
     };
 
     checkTokenValidity();
-  }, [token, router]);
+  }, [token, router, searchParams]);
 
   const onSubmit = async (data) => {
     if (!token) return;
@@ -251,7 +254,9 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen w-full items-center justify-center"></div>
+        <div className="flex min-h-screen w-full items-center justify-center">
+          <Spinner size="lg" />
+        </div>
       }
     >
       <ResetPasswordContent />
