@@ -84,7 +84,7 @@ export default function Login() {
         setSavedUser(updatedUsers);
       }
 
-      router.push("/");
+      router.push("/home");
     } catch (err) {
       setError(err.response?.data?.error || "Erro ao fazer login");
     }
@@ -123,7 +123,7 @@ export default function Login() {
 
   const autoLogin = async (token) => {
     Cookies.set("token", token, { expires: 1 });
-    router.push("/");
+    router.push("/home");
   };
 
   return (

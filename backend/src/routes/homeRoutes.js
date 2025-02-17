@@ -21,6 +21,7 @@ router.get("/home", authenticateToken, async (req, res) => {
         userId: user.id,
         name: user.name,
         email: user.email,
+        nivel: user.nivel,
       },
     });
   } catch (error) {
