@@ -2,7 +2,7 @@
 
 import "@/app/globals.css";
 import { createContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
 import { destroyCookie, parseCookies } from "nookies";
 import {
@@ -24,11 +24,14 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false); // Estado para exibir o diálogo
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = async () => {
       const cookies = parseCookies();
       const token = cookies.token;
+
+      if (pathname === "/") return;
 
       if (!token) {
         router.push("/login");
@@ -52,7 +55,7 @@ export default function AuthProvider({ children }) {
     checkAuth();
     const interval = setInterval(checkAuth, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [router]);
+  }, [pathname, router]);
 
   const handleClose = () => {
     setError(false);
