@@ -60,6 +60,7 @@ export default function MainLayout({ user }) {
     if (accessiblePages.length > 0) {
       setActivePage(accessiblePages[0]); // Define a primeira página permitida
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.nivel]);
 
   // Determinar qual conteúdo renderizar
