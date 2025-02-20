@@ -11,14 +11,18 @@ const createUser = async (name, email, password) => {
   });
 };
 
-const authenticateUser = async (email, password) => {
+const authenticateUser = async (email, password, rememberMe) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new Error("Usuário não encontrado!");
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) throw new Error("Senha incorreta!");
 
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
+  const expiresIn = rememberMe ? "30d" : "1h";
+
+  const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+    expiresIn: expiresIn,
+  });
   return { token, user: { name: user.name } };
 };
 

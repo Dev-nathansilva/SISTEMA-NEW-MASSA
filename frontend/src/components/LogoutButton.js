@@ -9,8 +9,9 @@ export default function LogoutButton() {
 
       if (res.ok) {
         toaster.create({
-          title: "Logout realizado com sucesso!",
+          description: "Logout realizado com sucesso!",
           type: "success",
+          duration: 1300,
         });
         setTimeout(() => {
           window.location.href = "/login";

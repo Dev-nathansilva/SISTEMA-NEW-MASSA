@@ -4,20 +4,10 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Alert, Box, Flex, Input, Link, Text, Button } from "@chakra-ui/react";
-import { InputGroup } from "@/components/ui/input-group";
-import { LuUser } from "react-icons/lu";
-import { HiUser } from "react-icons/hi2";
-import { Field } from "@/components/ui/field";
-import { PasswordInput } from "@/components/ui/password-input";
-import { FaLock } from "react-icons/fa";
-import { Switch } from "@/components/ui/switch";
-import { TbLogin2 } from "react-icons/tb";
+import { Alert, Box, Link, Text } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { Tooltip } from "@/components/ui/tooltip";
 import Spinner from "@/components/Spinner";
-import { FaTrash } from "react-icons/fa";
-import { FaAngleLeft } from "react-icons/fa";
 import SavedAccounts from "@/components/SavedAccounts";
 import LoginForm from "@/components/LoginForm";
 import PasswordResetForm from "@/components/PasswordResetForm";
@@ -38,6 +28,24 @@ export default function Login() {
   const router = useRouter();
 
   useEffect(() => {
+    const token = Cookies.get("token");
+    const verifyToken = async () => {
+      try {
+        await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/verify-token`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        router.push("/home");
+      } catch (err) {
+        Cookies.remove("token");
+      }
+    };
+
+    if (token) {
+      verifyToken();
+    }
+  }, [router]);
+
+  useEffect(() => {
     const savedUsers = Cookies.get("savedUsers");
     if (savedUsers) {
       setSavedUser(JSON.parse(savedUsers));
@@ -55,13 +63,12 @@ export default function Login() {
         {
           email: data.email,
           password: data.password,
+          rememberMe: rememberMe,
         }
       );
       // Salva o token no cookie
-      Cookies.set("token", res.data.token, { expires: 1 });
-
-      console.log("estado do switch:", rememberMe);
-      console.log("res-data:", res.data.user.name);
+      const tokenExpiration = rememberMe ? 30 : 1;
+      Cookies.set("token", res.data.token, { expires: tokenExpiration });
 
       if (rememberMe) {
         const newUser = { name: res.data.user.name, token: res.data.token };
@@ -122,8 +129,33 @@ export default function Login() {
   }, [error]);
 
   const autoLogin = async (token) => {
-    Cookies.set("token", token, { expires: 1 });
-    router.push("/home");
+    try {
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/verify-token`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      Cookies.set("token", token, { expires: 30 });
+      router.push("/home");
+    } catch (err) {
+      setError("Sessão Expirada, faça login novamente...");
+
+      const savedUsers = Cookies.get("savedUsers")
+        ? JSON.parse(Cookies.get("savedUsers"))
+        : [];
+
+      const updatedUsers = savedUsers.filter((user) => user.token !== token);
+
+      if (updatedUsers.length > 0) {
+        Cookies.set("savedUsers", JSON.stringify(updatedUsers), {
+          expires: 30,
+          path: "/",
+        });
+      } else {
+        Cookies.remove("savedUsers");
+      }
+
+      setSavedUser(updatedUsers);
+    }
   };
 
   return (

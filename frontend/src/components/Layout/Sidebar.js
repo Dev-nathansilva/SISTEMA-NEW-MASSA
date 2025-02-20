@@ -1,27 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { Box, IconButton, VStack, Text } from "@chakra-ui/react";
-import { FiMenu, FiSettings, FiUsers } from "react-icons/fi";
+import { Box, Text, VStack } from "@chakra-ui/react";
+import { FiUsers, FiShoppingCart } from "react-icons/fi";
 import { BiSolidDashboard } from "react-icons/bi";
 
-export default function Sidebar({ isOpen, toggle, setActivePage }) {
+export default function Sidebar({
+  isOpen,
+  toggle,
+  setActivePage,
+  accessiblePages,
+}) {
   const [hoveredMenu, setHoveredMenu] = useState(null);
 
-  // Itens do menu
+  // Estrutura do menu com submenus
   const menuItems = [
-    { name: "Dashboard", icon: <BiSolidDashboard />, hasSubmenu: false },
+    { name: "Dashboard", icon: <BiSolidDashboard />, submenu: [] },
     {
       name: "Usuários",
       icon: <FiUsers />,
-      hasSubmenu: true,
       submenu: ["Lista", "Novo Usuário"],
+    },
+    {
+      name: "Vendas",
+      icon: <FiShoppingCart />,
+      submenu: [],
     },
   ];
 
   return (
     <Box
-      width={isOpen ? "250px" : "65px"}
+      width={isOpen ? "200px" : "70px"}
       transition="width 0.3s"
       bg="gray.800"
       color="white"
@@ -29,70 +38,81 @@ export default function Sidebar({ isOpen, toggle, setActivePage }) {
       p={4}
       position="relative"
     >
-      {/* Botão de Toggle */}
-      <IconButton
-        icon={<FiMenu />}
-        onClick={toggle}
-        bg="transparent"
-        color="white"
-        mb={4}
-      />
-
       {/* Menu de Itens */}
       <VStack spacing={4} align="stretch">
-        {menuItems.map((item) => (
-          <Box key={item.name} position="relative">
-            {/* Item principal do menu */}
-            <Box
-              display="flex"
-              alignItems="center"
-              p={2}
-              borderRadius="md"
-              cursor="pointer"
-              bg={hoveredMenu === item.name ? "gray.700" : "transparent"}
-              _hover={{ bg: "gray.700" }}
-              onClick={() => {
-                if (!item.hasSubmenu) {
-                  setActivePage({ main: item.name, sub: "" });
-                }
-              }}
-              onMouseEnter={() => item.hasSubmenu && setHoveredMenu(item.name)}
-              onMouseLeave={() => item.hasSubmenu && setHoveredMenu(null)}
-            >
-              {item.icon}
-              {isOpen && <Text ml={3}>{item.name}</Text>}
-            </Box>
+        {menuItems.map((item) => {
+          const hasPermission =
+            accessiblePages.includes(item.name) ||
+            item.submenu.some((sub) =>
+              accessiblePages.includes(`${item.name} - ${sub}`)
+            );
 
-            {/* Submenu */}
-            {item.hasSubmenu && hoveredMenu === item.name && (
+          if (!hasPermission) return null; // Esconde itens sem permissão
+
+          return (
+            <Box
+              key={item.name}
+              position="relative"
+              onMouseEnter={() =>
+                item.submenu.length > 0 && setHoveredMenu(item.name)
+              }
+              onMouseLeave={() =>
+                item.submenu.length > 0 && setHoveredMenu(null)
+              }
+            >
+              {/* Item principal do menu */}
               <Box
-                position="absolute"
-                left={isOpen ? "100%" : "60px"}
-                top="0"
-                bg="gray.700"
-                borderRadius="md"
+                display="flex"
+                alignItems="center"
                 p={2}
-                zIndex={10}
-                minWidth="150px"
-                onMouseEnter={() => setHoveredMenu(item.name)}
-                onMouseLeave={() => setHoveredMenu(null)}
+                borderRadius="md"
+                cursor="pointer"
+                bg={hoveredMenu === item.name ? "gray.700" : "transparent"}
+                _hover={{ bg: "gray.700" }}
+                onClick={() =>
+                  item.submenu.length === 0 &&
+                  setActivePage({ main: item.name, sub: "" })
+                }
               >
-                {item.submenu.map((sub) => (
-                  <Box
-                    key={sub}
-                    p={2}
-                    borderRadius="md"
-                    cursor="pointer"
-                    _hover={{ bg: "gray.600" }}
-                    onClick={() => setActivePage({ main: item.name, sub })}
-                  >
-                    {sub}
-                  </Box>
-                ))}
+                {item.icon}
+                {isOpen && <Text ml={3}>{item.name}</Text>}
               </Box>
-            )}
-          </Box>
-        ))}
+
+              {/* Submenu */}
+              {item.submenu.length > 0 && hoveredMenu === item.name && (
+                <Box
+                  position="absolute"
+                  left={isOpen ? "100%" : "60px"}
+                  top="0"
+                  bg="gray.700"
+                  borderRadius="md"
+                  p={2}
+                  zIndex={10}
+                  minWidth="150px"
+                  onMouseEnter={() => setHoveredMenu(item.name)} // Mantém visível ao passar o mouse
+                  onMouseLeave={() => setHoveredMenu(null)} // Esconde ao sair
+                >
+                  {item.submenu
+                    .filter((sub) =>
+                      accessiblePages.includes(`${item.name} - ${sub}`)
+                    )
+                    .map((sub) => (
+                      <Box
+                        key={sub}
+                        p={2}
+                        borderRadius="md"
+                        cursor="pointer"
+                        _hover={{ bg: "gray.600" }}
+                        onClick={() => setActivePage({ main: item.name, sub })}
+                      >
+                        {sub}
+                      </Box>
+                    ))}
+                </Box>
+              )}
+            </Box>
+          );
+        })}
       </VStack>
     </Box>
   );

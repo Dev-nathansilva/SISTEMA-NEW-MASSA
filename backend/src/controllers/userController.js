@@ -12,9 +12,13 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
   try {
-    const { token, user } = await UserService.authenticateUser(email, password);
+    const { token, user } = await UserService.authenticateUser(
+      email,
+      password,
+      rememberMe
+    );
     res.json({ token, user });
   } catch (error) {
     res.status(400).json({ error: error.message });

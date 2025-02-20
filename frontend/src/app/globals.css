@@ -69,3 +69,31 @@ input:-webkit-autofill {
 .input-error {
   outline: 1px solid red !important;
 }
+
+.dialog-content {
+  background-color: #1a1a1a;
+  color: #e1e1e1;
+  border-radius: 8px;
+}
+
+.title-dialog {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.dialog-body {
+  font-size: 17px;
+  color: #ccc;
+}
+
+.button-dialog {
+  background-color: #3a3a3a;
+  color: #fff;
+  padding: 0 10px;
+}
+.button-dialog:hover {
+  background-color: #343434;
+}
