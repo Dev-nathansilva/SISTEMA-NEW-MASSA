@@ -28,7 +28,7 @@ export default function MainLayout({ user }) {
     padrao: ["Dashboard", "Vendas", "Usuários - Lista"],
   };
 
-  const userPermissions = permissions[user.nivel] || permissions["padrão"];
+  const userPermissions = permissions[user.nivel] || permissions["padrao"];
 
   // Definição das páginas e submenus
   const pages = {
