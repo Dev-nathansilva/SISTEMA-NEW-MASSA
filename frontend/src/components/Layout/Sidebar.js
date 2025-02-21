@@ -9,9 +9,22 @@ export default function Sidebar({
   isOpen,
   toggle,
   setActivePage,
-  accessiblePages,
+  permissions,
 }) {
   const [hoveredMenu, setHoveredMenu] = useState(null);
+
+  // Verifica se o usuário tem permissão para acessar um menu principal
+  const hasPermission = (menu) => {
+    return (
+      permissions[menu] === true ||
+      (Array.isArray(permissions[menu]) && permissions[menu].length > 0)
+    );
+  };
+
+  // Verifica se o usuário tem permissão para acessar um submenu
+  const hasSubPermission = (menu, sub) => {
+    return Array.isArray(permissions[menu]) && permissions[menu].includes(sub);
+  };
 
   // Estrutura do menu com submenus
   const menuItems = [
@@ -19,13 +32,9 @@ export default function Sidebar({
     {
       name: "Usuários",
       icon: <FiUsers />,
-      submenu: ["Lista", "Novo Usuário"],
+      submenu: permissions["Usuários"] || [],
     },
-    {
-      name: "Vendas",
-      icon: <FiShoppingCart />,
-      submenu: [],
-    },
+    { name: "Vendas", icon: <FiShoppingCart />, submenu: [] },
   ];
 
   return (
@@ -41,13 +50,7 @@ export default function Sidebar({
       {/* Menu de Itens */}
       <VStack spacing={4} align="stretch">
         {menuItems.map((item) => {
-          const hasPermission =
-            accessiblePages.includes(item.name) ||
-            item.submenu.some((sub) =>
-              accessiblePages.includes(`${item.name} - ${sub}`)
-            );
-
-          if (!hasPermission) return null; // Esconde itens sem permissão
+          if (!hasPermission(item.name)) return null; // Esconde itens sem permissão
 
           return (
             <Box
@@ -92,22 +95,18 @@ export default function Sidebar({
                   onMouseEnter={() => setHoveredMenu(item.name)} // Mantém visível ao passar o mouse
                   onMouseLeave={() => setHoveredMenu(null)} // Esconde ao sair
                 >
-                  {item.submenu
-                    .filter((sub) =>
-                      accessiblePages.includes(`${item.name} - ${sub}`)
-                    )
-                    .map((sub) => (
-                      <Box
-                        key={sub}
-                        p={2}
-                        borderRadius="md"
-                        cursor="pointer"
-                        _hover={{ bg: "gray.600" }}
-                        onClick={() => setActivePage({ main: item.name, sub })}
-                      >
-                        {sub}
-                      </Box>
-                    ))}
+                  {item.submenu.map((sub) => (
+                    <Box
+                      key={sub}
+                      p={2}
+                      borderRadius="md"
+                      cursor="pointer"
+                      _hover={{ bg: "gray.600" }}
+                      onClick={() => setActivePage({ main: item.name, sub })}
+                    >
+                      {sub}
+                    </Box>
+                  ))}
                 </Box>
               )}
             </Box>

@@ -2,6 +2,7 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const router = express.Router();
 const authenticateToken = require("../middlewares/authMiddleware");
+const permissions = require("../config/permissions");
 const prisma = new PrismaClient();
 
 // Rota protegida
@@ -22,6 +23,7 @@ router.get("/home", authenticateToken, async (req, res) => {
         name: user.name,
         email: user.email,
         nivel: user.nivel,
+        permissions: permissions[user.nivel] || permissions["padrao"],
       },
     });
   } catch (error) {

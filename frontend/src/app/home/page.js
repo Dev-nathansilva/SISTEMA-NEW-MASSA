@@ -18,7 +18,7 @@ export default async function Home() {
 
     const user = res.data.user;
 
-    return <MainLayout user={user} />;
+    return <MainLayout user={user} permissions={user.permissions} />;
   } catch (error) {
     redirect("/login");
   }
