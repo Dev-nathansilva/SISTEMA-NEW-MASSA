@@ -1,17 +1,7 @@
 const permissions = {
-  admin: {
-    Dashboard: true,
-    Usuários: ["Lista", "Novo Usuário"],
-    Vendas: true,
-  },
-  vendedor: {
-    Vendas: true,
-  },
-  padrao: {
-    Dashboard: true,
-    Usuários: ["Lista"],
-    Vendas: true,
-  },
+  admin: ["Dashboard", "Usuários", "Vendas"],
+  vendedor: ["Vendas"],
+  padrao: ["Dashboard", "Usuários.Lista", "Vendas"],
 };
 
 module.exports = permissions;

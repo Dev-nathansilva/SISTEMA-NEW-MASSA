@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "@/components/Layout/Sidebar";
 import Topbar from "@/components/Layout/Topbar";
@@ -12,10 +12,8 @@ import SalesPage from "@/components/pages/SalesPage";
 
 const pages = {
   Dashboard: <DashboardPage />,
-  Usuários: {
-    Lista: <ListPage />,
-    "Novo Usuário": <NewUsersPage />,
-  },
+  "Usuários.Lista": <ListPage />,
+  "Usuários.Novo Usuário": <NewUsersPage />,
   Vendas: <SalesPage />,
 };
 
@@ -25,15 +23,19 @@ export default function MainLayout({ user, permissions }) {
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
 
   useEffect(() => {
-    const mainPages = Object.keys(permissions).filter(
-      (page) => permissions[page]
-    );
-    if (mainPages.length) setActivePage({ main: mainPages[0], sub: "" });
+    if (permissions.length) {
+      const firstPage = permissions[0];
+      const [main, sub] = firstPage.split(".");
+      setActivePage({ main, sub: sub || "" });
+    }
   }, [permissions]);
 
-  const currentPageContent = activePage.sub
-    ? pages[activePage.main]?.[activePage.sub]
-    : pages[activePage.main] || null;
+  const getPageContent = useMemo(() => {
+    if (activePage.sub) {
+      return pages[`${activePage.main}.${activePage.sub}`] || null;
+    }
+    return pages[activePage.main] || null;
+  }, [activePage]);
 
   return (
     <Flex height="100vh">
@@ -55,7 +57,7 @@ export default function MainLayout({ user, permissions }) {
           toggleRightPanel={() => setIsRightPanelOpen(!isRightPanelOpen)}
         />
         <Box flex="1" p={4}>
-          {currentPageContent}
+          {getPageContent}
         </Box>
       </Box>
 
