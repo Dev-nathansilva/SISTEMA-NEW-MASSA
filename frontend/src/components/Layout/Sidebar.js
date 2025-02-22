@@ -5,6 +5,33 @@ import { Box, Text, VStack } from "@chakra-ui/react";
 import { FiUsers, FiShoppingCart } from "react-icons/fi";
 import { BiSolidDashboard } from "react-icons/bi";
 
+const menuItems = [
+  { name: "Dashboard", icon: <BiSolidDashboard /> },
+  {
+    name: "Usuários",
+    icon: <FiUsers />,
+    submenu: ["Lista", "Novo Usuário"],
+  },
+  { name: "Vendas", icon: <FiShoppingCart /> },
+];
+
+// Verifica se o usuário tem permissão para acessar um menu principal ou submenu
+const hasPermission = (permissions, menu, submenu = null) => {
+  // Se o usuário tem permissão para o menu principal, ele pode acessar qualquer submenu
+  if (permissions.includes(menu)) return true;
+
+  // Caso tenha permissão específica para um submenu
+  if (submenu) {
+    return permissions.includes(`${menu}.${submenu}`);
+  }
+
+  // Se o usuário tem permissão para qualquer submenu, o menu principal precisa ser exibido
+  const hasAnySubmenuPermission = permissions.some((perm) =>
+    perm.startsWith(`${menu}.`)
+  );
+  return hasAnySubmenuPermission;
+};
+
 export default function Sidebar({
   isOpen,
   toggle,
@@ -12,30 +39,6 @@ export default function Sidebar({
   permissions,
 }) {
   const [hoveredMenu, setHoveredMenu] = useState(null);
-
-  // Verifica se o usuário tem permissão para acessar um menu principal
-  const hasPermission = (menu) => {
-    return (
-      permissions[menu] === true ||
-      (Array.isArray(permissions[menu]) && permissions[menu].length > 0)
-    );
-  };
-
-  // Verifica se o usuário tem permissão para acessar um submenu
-  const hasSubPermission = (menu, sub) => {
-    return Array.isArray(permissions[menu]) && permissions[menu].includes(sub);
-  };
-
-  // Estrutura do menu com submenus
-  const menuItems = [
-    { name: "Dashboard", icon: <BiSolidDashboard />, submenu: [] },
-    {
-      name: "Usuários",
-      icon: <FiUsers />,
-      submenu: permissions["Usuários"] || [],
-    },
-    { name: "Vendas", icon: <FiShoppingCart />, submenu: [] },
-  ];
 
   return (
     <Box
@@ -50,17 +53,18 @@ export default function Sidebar({
       {/* Menu de Itens */}
       <VStack spacing={4} align="stretch">
         {menuItems.map((item) => {
-          if (!hasPermission(item.name)) return null; // Esconde itens sem permissão
+          // Se o usuário não tiver permissão para o menu, ele não será exibido
+          if (!hasPermission(permissions, item.name)) return null;
 
           return (
             <Box
               key={item.name}
               position="relative"
               onMouseEnter={() =>
-                item.submenu.length > 0 && setHoveredMenu(item.name)
+                item.submenu?.length > 0 && setHoveredMenu(item.name)
               }
               onMouseLeave={() =>
-                item.submenu.length > 0 && setHoveredMenu(null)
+                item.submenu?.length > 0 && setHoveredMenu(null)
               }
             >
               {/* Item principal do menu */}
@@ -73,7 +77,7 @@ export default function Sidebar({
                 bg={hoveredMenu === item.name ? "gray.700" : "transparent"}
                 _hover={{ bg: "gray.700" }}
                 onClick={() =>
-                  item.submenu.length === 0 &&
+                  !item.submenu?.length &&
                   setActivePage({ main: item.name, sub: "" })
                 }
               >
@@ -82,7 +86,7 @@ export default function Sidebar({
               </Box>
 
               {/* Submenu */}
-              {item.submenu.length > 0 && hoveredMenu === item.name && (
+              {item.submenu && hoveredMenu === item.name && (
                 <Box
                   position="absolute"
                   left={isOpen ? "100%" : "60px"}
@@ -92,21 +96,25 @@ export default function Sidebar({
                   p={2}
                   zIndex={10}
                   minWidth="150px"
-                  onMouseEnter={() => setHoveredMenu(item.name)} // Mantém visível ao passar o mouse
-                  onMouseLeave={() => setHoveredMenu(null)} // Esconde ao sair
+                  onMouseEnter={() => setHoveredMenu(item.name)}
+                  onMouseLeave={() => setHoveredMenu(null)}
                 >
-                  {item.submenu.map((sub) => (
-                    <Box
-                      key={sub}
-                      p={2}
-                      borderRadius="md"
-                      cursor="pointer"
-                      _hover={{ bg: "gray.600" }}
-                      onClick={() => setActivePage({ main: item.name, sub })}
-                    >
-                      {sub}
-                    </Box>
-                  ))}
+                  {item.submenu.map((sub) => {
+                    if (!hasPermission(permissions, item.name, sub))
+                      return null;
+                    return (
+                      <Box
+                        key={sub}
+                        p={2}
+                        borderRadius="md"
+                        cursor="pointer"
+                        _hover={{ bg: "gray.600" }}
+                        onClick={() => setActivePage({ main: item.name, sub })}
+                      >
+                        {sub}
+                      </Box>
+                    );
+                  })}
                 </Box>
               )}
             </Box>
