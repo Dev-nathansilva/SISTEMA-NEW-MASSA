@@ -1,7 +1,16 @@
 const permissions = {
-  admin: ["Dashboard", "Usuários", "Vendas"],
+  admin: [
+    "Dashboard",
+    "Cadastros",
+    "Vendas",
+    "Controle",
+    "Emissões",
+    "CRM",
+    "Relatórios",
+    "Usuários",
+  ],
   vendedor: ["Vendas"],
-  padrao: ["Dashboard", "Usuários.Lista", "Vendas"],
+  padrao: ["Dashboard"],
 };
 
 module.exports = permissions;

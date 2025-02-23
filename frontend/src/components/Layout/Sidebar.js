@@ -1,35 +1,58 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Text, VStack } from "@chakra-ui/react";
-import { FiUsers, FiShoppingCart } from "react-icons/fi";
-import { BiSolidDashboard } from "react-icons/bi";
+import { Box, Text, VStack, Image, Flex, Button } from "@chakra-ui/react";
+import {
+  FiUsers,
+  FiShoppingCart,
+  FiFileText,
+  FiClipboard,
+} from "react-icons/fi";
+import { IoIosArrowForward } from "react-icons/io";
+
+import { BiSolidDashboard, BiSolidReport, BiSolidUser } from "react-icons/bi";
+import LogoutButton from "../LogoutButton";
+import { MdCallEnd } from "react-icons/md";
 
 const menuItems = [
   { name: "Dashboard", icon: <BiSolidDashboard /> },
   {
-    name: "Usuários",
+    name: "Cadastros",
     icon: <FiUsers />,
-    submenu: ["Lista", "Novo Usuário"],
+    submenu: [
+      "Clientes",
+      "Fornecedores",
+      "Produtos",
+      "Vendedores",
+      "Funcionários",
+    ],
   },
-  { name: "Vendas", icon: <FiShoppingCart /> },
+  {
+    name: "Vendas",
+    icon: <FiShoppingCart />,
+    submenu: ["Tela de Vendas", "Extrato", "Comissões"],
+  },
+  {
+    name: "Controle",
+    icon: <FiClipboard />,
+    submenu: ["Estoque", "Financeiro / Transações", "Rotas", "Contas"],
+  },
+  {
+    name: "Emissões",
+    icon: <FiFileText />,
+    submenu: ["Boleto", "Nota Fiscal", "Duplicata", "Cheque"],
+  },
+  { name: "CRM", icon: <FiUsers /> },
+  { name: "Relatórios", icon: <BiSolidReport /> },
+  { name: "Usuários", icon: <BiSolidUser /> },
 ];
 
-// Verifica se o usuário tem permissão para acessar um menu principal ou submenu
 const hasPermission = (permissions, menu, submenu = null) => {
-  // Se o usuário tem permissão para o menu principal, ele pode acessar qualquer submenu
   if (permissions.includes(menu)) return true;
-
-  // Caso tenha permissão específica para um submenu
   if (submenu) {
     return permissions.includes(`${menu}.${submenu}`);
   }
-
-  // Se o usuário tem permissão para qualquer submenu, o menu principal precisa ser exibido
-  const hasAnySubmenuPermission = permissions.some((perm) =>
-    perm.startsWith(`${menu}.`)
-  );
-  return hasAnySubmenuPermission;
+  return permissions.some((perm) => perm.startsWith(`${menu}.`));
 };
 
 export default function Sidebar({
@@ -42,85 +65,143 @@ export default function Sidebar({
 
   return (
     <Box
-      width={isOpen ? "200px" : "70px"}
+      width={isOpen ? "210px" : "100px"}
       transition="width 0.3s"
-      bg="gray.800"
-      color="white"
-      height="100vh"
-      p={4}
-      position="relative"
+      className="sidebar-container"
     >
-      {/* Menu de Itens */}
-      <VStack spacing={4} align="stretch">
-        {menuItems.map((item) => {
-          // Se o usuário não tiver permissão para o menu, ele não será exibido
-          if (!hasPermission(permissions, item.name)) return null;
+      <Box>
+        <Box mb={6} textAlign="center">
+          <Image
+            src={isOpen ? "/logos/completa.png" : "/logos/icone.png"}
+            alt="Logo"
+            height={isOpen ? "50px" : "40px"}
+            mx="auto"
+            transition="width 0.3s"
+          />
+        </Box>
 
-          return (
-            <Box
-              key={item.name}
-              position="relative"
-              onMouseEnter={() =>
-                item.submenu?.length > 0 && setHoveredMenu(item.name)
-              }
-              onMouseLeave={() =>
-                item.submenu?.length > 0 && setHoveredMenu(null)
-              }
-            >
-              {/* Item principal do menu */}
+        <VStack align="stretch" className="group-menus">
+          {menuItems.map((item) => {
+            if (!hasPermission(permissions, item.name)) return null;
+            return (
               <Box
-                display="flex"
-                alignItems="center"
-                p={2}
-                borderRadius="md"
-                cursor="pointer"
-                bg={hoveredMenu === item.name ? "gray.700" : "transparent"}
-                _hover={{ bg: "gray.700" }}
-                onClick={() =>
-                  !item.submenu?.length &&
-                  setActivePage({ main: item.name, sub: "" })
-                }
+                key={item.name}
+                position="relative"
+                onMouseEnter={() => setHoveredMenu(item.name)}
+                onMouseLeave={() => setHoveredMenu(null)}
               >
-                {item.icon}
-                {isOpen && <Text ml={3}>{item.name}</Text>}
-              </Box>
+                <Box display="flex" flexDirection="column" position="relative">
+                  <Box
+                    className="item-menu"
+                    bg={hoveredMenu === item.name ? "#154AA1" : "transparent"}
+                    onClick={() =>
+                      !item.submenu?.length &&
+                      setActivePage({ main: item.name, sub: "" })
+                    }
+                    justifyContent={isOpen ? "space-between" : "center"}
+                    px={3}
+                    py={2}
+                    cursor="pointer"
+                  >
+                    <Flex align="center">
+                      <Box className="icon-sidebar">{item.icon}</Box>
+                      {isOpen && (
+                        <Text
+                          ml={3}
+                          color={hoveredMenu === item.name ? "white" : "black"}
+                        >
+                          {item.name}
+                        </Text>
+                      )}
+                    </Flex>
 
-              {/* Submenu */}
-              {item.submenu && hoveredMenu === item.name && (
-                <Box
-                  position="absolute"
-                  left={isOpen ? "100%" : "60px"}
-                  top="0"
-                  bg="gray.700"
-                  borderRadius="md"
-                  p={2}
-                  zIndex={10}
-                  minWidth="150px"
-                  onMouseEnter={() => setHoveredMenu(item.name)}
-                  onMouseLeave={() => setHoveredMenu(null)}
-                >
-                  {item.submenu.map((sub) => {
-                    if (!hasPermission(permissions, item.name, sub))
-                      return null;
-                    return (
+                    {/* Adiciona a seta se houver submenu */}
+                    {isOpen && item.submenu && (
+                      <IoIosArrowForward
+                        size={16}
+                        color={
+                          hoveredMenu === item.name
+                            ? "white"
+                            : "rgb(193 193 193)"
+                        }
+                      />
+                    )}
+                  </Box>
+
+                  {/* Submenu */}
+                  {item.submenu && hoveredMenu === item.name && (
+                    <Box position="absolute" left={"100%"}>
                       <Box
-                        key={sub}
-                        p={2}
+                        className="submenu-container"
+                        top="0"
+                        bg="white"
+                        border="1px solid gray.300"
                         borderRadius="md"
-                        cursor="pointer"
-                        _hover={{ bg: "gray.600" }}
-                        onClick={() => setActivePage({ main: item.name, sub })}
+                        zIndex={10}
+                        ml={2}
+                        minWidth="250px"
                       >
-                        {sub}
+                        {/* Adiciona o nome e ícone do menu acima do submenu */}
+                        <Box
+                          className="title-submenu"
+                          display="flex"
+                          alignItems="center"
+                        >
+                          <Box mr={2}>{item.icon}</Box>
+                          <Text>{item.name}</Text>
+                        </Box>
+
+                        {item.submenu.map((sub) => {
+                          if (!hasPermission(permissions, item.name, sub))
+                            return null;
+                          return (
+                            <Box
+                              key={sub}
+                              p={2}
+                              className="submenu-item"
+                              borderRadius="md"
+                              cursor="pointer"
+                              _hover={{ bg: "rgba(0,0,0,0.04)" }}
+                              onClick={() =>
+                                setActivePage({ main: item.name, sub })
+                              }
+                            >
+                              {sub}
+                            </Box>
+                          );
+                        })}
                       </Box>
-                    );
-                  })}
+                    </Box>
+                  )}
                 </Box>
-              )}
+              </Box>
+            );
+          })}
+        </VStack>
+      </Box>
+
+      <Flex className="group-buttons-sidebar" direction="column" gap="3">
+        <Button
+          color="black"
+          border="1px solid gray.300"
+          _hover={{ bg: "gray.300" }}
+          textAlign="left"
+          className={`flex ${
+            isOpen ? "justify-start" : "justify-center"
+          } button-padrao-sidebar`}
+        >
+          <Flex align="center" gap={2}>
+            <Box className="icon-sidebar">
+              {" "}
+              <MdCallEnd size={20} />
             </Box>
-          );
-        })}
-      </VStack>
+
+            {isOpen && <Text>Suporte</Text>}
+          </Flex>
+        </Button>
+
+        <LogoutButton isOpen={isOpen} />
+      </Flex>
     </Box>
   );
 }

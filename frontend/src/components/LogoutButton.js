@@ -1,8 +1,10 @@
 "use client";
 
 import { Toaster, toaster } from "@/components/ui/toaster";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { RiLogoutBoxRFill } from "react-icons/ri";
 
-export default function LogoutButton() {
+export default function LogoutButton({ isOpen }) {
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/logout", { method: "POST" });
@@ -30,7 +32,20 @@ export default function LogoutButton() {
 
   return (
     <>
-      <button onClick={handleLogout}>Sair</button>
+      <Button
+        onClick={handleLogout}
+        _hover={{ bg: "gray.300" }}
+        className={`flex ${
+          isOpen ? "justify-start" : "justify-center"
+        } button-padrao-sidebar`}
+      >
+        <Flex align="center" gap={2}>
+          <Box className="icon-sidebar">
+            <RiLogoutBoxRFill size={20} color="red" />
+          </Box>
+          {isOpen && <Text>Sair</Text>}
+        </Flex>
+      </Button>
       <Toaster />
     </>
   );
