@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import "rsuite/dist/rsuite.min.css";
+
 import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "@/components/Layout/Sidebar";
 import Topbar from "@/components/Layout/Topbar";
@@ -56,7 +58,27 @@ export default function MainLayout({ user, permissions }) {
 
   useEffect(() => {
     if (permissions.length) {
-      const firstPage = permissions[0];
+      let firstPage = permissions[0];
+
+      // Se for uma categoria, buscar o primeiro submenu correspondente
+      if (!pages[firstPage]) {
+        const category = permissions.find((perm) => !perm.includes("."));
+        if (category) {
+          const firstSubmenu = Object.keys(pages).find((page) =>
+            page.startsWith(`${category}.`)
+          );
+          if (firstSubmenu) {
+            firstPage = firstSubmenu;
+          }
+        }
+
+        // Se não encontrar submenu, pegar o primeiro disponível na lista
+        if (!firstPage || !pages[firstPage]) {
+          firstPage =
+            permissions.find((perm) => perm.includes(".")) || firstPage;
+        }
+      }
+
       const [main, sub] = firstPage.split(".");
       setActivePage({ main, sub: sub || "" });
     }
@@ -78,19 +100,21 @@ export default function MainLayout({ user, permissions }) {
         permissions={permissions}
       />
 
-      <Box flex="1" display="flex" flexDirection="column">
+      <Box
+        flex="1"
+        display="flex"
+        flexDirection="column"
+        pl={isSidebarOpen ? "220px" : "100px"}
+        transition="padding 0.3s"
+      >
         <Topbar
-          pageTitle={
-            activePage.sub
-              ? `${activePage.main} / ${activePage.sub}`
-              : activePage.main
-          }
+          user={user}
+          mainTitle={activePage.main}
+          subTitle={activePage.sub}
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           toggleRightPanel={() => setIsRightPanelOpen(!isRightPanelOpen)}
         />
-        <Box flex="1" p={4}>
-          {getPageContent}
-        </Box>
+        <Box flex="1">{getPageContent}</Box>
       </Box>
 
       {isRightPanelOpen && (

@@ -8,16 +8,16 @@ export default function RightPanel({ onClose }) {
   return (
     <Box
       width="250px"
-      bg="gray.800"
+      bg="gray.300"
       color="white"
-      height="100vh"
-      p={4}
-      position="absolute"
+      className="fixed min-h-screen p-4"
       right="0"
     >
-      <FiXOctagon onClick={onClose} bg="transparent" color="white" />
+      <FiXOctagon onClick={onClose} bg="transparent" color="black" />
 
-      <Box mt={4}>Notificações / Informações</Box>
+      <Box color={"black"} mt={4}>
+        Notificações / Informações
+      </Box>
     </Box>
   );
 }

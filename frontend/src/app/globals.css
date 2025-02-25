@@ -6,11 +6,27 @@
 
 /* FONTS */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
 /* --------------------------- */
+
+/* SCROLLBAR */
+body::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: rgba(255, 166, 0, 0); /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgb(175, 175, 175); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  /* creates padding around scroll thumb */
+}
 
 .bg-principal {
   background-color: #f5f5f6;
-  min-height: 100vh;
+  min-height: 3000px;
 }
 
 a {
@@ -135,8 +151,8 @@ input:-webkit-autofill {
 
 .sidebar-container {
   border: 1px solid #c1c1c1;
-  position: relative;
-  min-height: 100vh;
+  position: fixed;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -144,6 +160,7 @@ input:-webkit-autofill {
   background-color: #fafafa;
   padding: 26px 16px;
   gap: 15px;
+  z-index: 100;
 }
 
 .group-buttons-sidebar {
@@ -156,6 +173,7 @@ input:-webkit-autofill {
 .submenu-container {
   padding: 5px 0;
   border: 1px solid #b4b4b4;
+  box-shadow: 0px 4px 4px 0px rgba(138, 138, 138, 0.25);
 }
 
 .title-submenu {
@@ -174,6 +192,10 @@ input:-webkit-autofill {
 
 /* TOPBAR */
 
+.topbar-container {
+  padding: 16px 50px 16px 20px;
+}
+
 .icone-open-close {
   font-size: 35px;
   padding: 5px;
@@ -184,14 +206,71 @@ input:-webkit-autofill {
   border-radius: 4px;
 }
 
-.title-page {
+.container-title-session {
+  display: flex;
+  gap: 10px;
   margin-left: 10px;
-  color: #000;
+}
+.title-page {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.subtitle-page {
+  color: rgba(0, 0, 0, 0.514);
+}
+
+.title-page,
+.subtitle-page {
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.title-page:hover {
+.title-page:hover,
+.subtitle-page:hover {
   background-color: #e9e9e9;
+}
+
+.submenu-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-action-topbar {
+  font-size: 20px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  position: relative;
+}
+.icon-action-topbar:hover {
+  background-color: #00000015;
+}
+
+.group-actions {
+  display: flex;
+  gap: 15px;
+  margin-right: 15px;
+}
+
+.container-perfil {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #00000004;
+  border: 1px solid #e0e0e0;
+}
+.container-perfil:hover {
+  background-color: #00000015;
+}
+
+.input-pesquisa {
+  border-radius: 13.431px;
+  background: rgba(0, 0, 0, 0.04);
+  color: #000;
 }

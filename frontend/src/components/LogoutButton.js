@@ -1,11 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { Toaster, toaster } from "@/components/ui/toaster";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { RiLogoutBoxRFill } from "react-icons/ri";
+import Spinner from "@/components/Spinner"; // Importando seu Spinner
 
 export default function LogoutButton({ isOpen }) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleLogout = async () => {
+    setIsLoading(true); // Ativa o Spinner
+
     try {
       const res = await fetch("/api/logout", { method: "POST" });
 
@@ -15,6 +21,7 @@ export default function LogoutButton({ isOpen }) {
           type: "success",
           duration: 1300,
         });
+
         setTimeout(() => {
           window.location.href = "/login";
         }, 1000);
@@ -27,6 +34,10 @@ export default function LogoutButton({ isOpen }) {
         title: "Erro ao fazer logout",
         type: "error",
       });
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     }
   };
 
@@ -38,12 +49,17 @@ export default function LogoutButton({ isOpen }) {
         className={`flex ${
           isOpen ? "justify-start" : "justify-center"
         } button-padrao-sidebar`}
+        isDisabled={isLoading} // Desativa o botão enquanto carrega
       >
         <Flex align="center" gap={2}>
           <Box className="icon-sidebar">
-            <RiLogoutBoxRFill size={20} color="red" />
+            {isLoading ? (
+              <Spinner size={20} color="red" /> // Mostra o Spinner enquanto carrega
+            ) : (
+              <RiLogoutBoxRFill size={20} color="red" /> // Ícone normal
+            )}
           </Box>
-          {isOpen && <Text>Sair</Text>}
+          {isOpen && <Text>{isLoading ? "Saindo..." : "Sair"}</Text>}
         </Flex>
       </Button>
       <Toaster />

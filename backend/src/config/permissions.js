@@ -9,8 +9,8 @@ const permissions = {
     "Relatórios",
     "Usuários",
   ],
-  vendedor: ["Vendas"],
-  padrao: ["Dashboard"],
+  vendedor: ["Vendas", "Emissões.Duplicata"],
+  padrao: ["Controle"],
 };
 
 module.exports = permissions;
