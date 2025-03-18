@@ -160,7 +160,7 @@ input:-webkit-autofill {
   background-color: #fafafa;
   padding: 26px 16px;
   gap: 15px;
-  z-index: 100;
+  z-index: 999;
 }
 
 .group-buttons-sidebar {
@@ -190,10 +190,25 @@ input:-webkit-autofill {
   gap: 2px !important;
 }
 
+/* CONTAINER CENTRAL */
+
+.container-central {
+  position: relative;
+}
+
 /* TOPBAR */
 
 .topbar-container {
-  padding: 16px 50px 16px 20px;
+  padding: 16px 50px 15px 125px;
+  position: fixed;
+  width: 100%;
+  background-color: #6b6b6b;
+  z-index: 998;
+  transition: padding 0.3s;
+  border-bottom: 1px solid #ebebeb;
+}
+.container-central.classe-ativa .topbar-container {
+  padding-left: 235px;
 }
 
 .icone-open-close {
@@ -273,4 +288,15 @@ input:-webkit-autofill {
   border-radius: 13.431px;
   background: rgba(0, 0, 0, 0.04);
   color: #000;
+}
+
+/* CONTEUDO */
+
+.container-central.classe-ativa .conteudo {
+  padding-left: 240px;
+}
+
+.conteudo {
+  transition: padding 0.3s;
+  padding: 130px 60px 16px 130px;
 }

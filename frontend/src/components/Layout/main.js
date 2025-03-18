@@ -101,10 +101,10 @@ export default function MainLayout({ user, permissions }) {
       />
 
       <Box
+        className={`container-central ${isSidebarOpen ? "classe-ativa" : ""}`}
         flex="1"
         display="flex"
         flexDirection="column"
-        pl={isSidebarOpen ? "220px" : "100px"}
         transition="padding 0.3s"
       >
         <Topbar
@@ -114,7 +114,9 @@ export default function MainLayout({ user, permissions }) {
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           toggleRightPanel={() => setIsRightPanelOpen(!isRightPanelOpen)}
         />
-        <Box flex="1">{getPageContent}</Box>
+        <Box className="conteudo" flex="1">
+          {getPageContent}
+        </Box>
       </Box>
 
       {isRightPanelOpen && (

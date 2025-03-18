@@ -10,7 +10,7 @@ export default function RightPanel({ onClose }) {
       width="250px"
       bg="gray.300"
       color="white"
-      className="fixed min-h-screen p-4"
+      className="fixed min-h-screen p-4 z-[1000]"
       right="0"
     >
       <FiXOctagon onClick={onClose} bg="transparent" color="black" />

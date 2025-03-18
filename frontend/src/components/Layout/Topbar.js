@@ -77,7 +77,7 @@ export default function Topbar({
             <Text className="font-bold text-black">
               {user?.name || "Usuário"}
             </Text>
-            <Text className="text-gray-500 text-sm">
+            <Text className="text-gray-500 text-sm m-0">
               {user?.nivel || "Sem nível"}
             </Text>
           </Box>
