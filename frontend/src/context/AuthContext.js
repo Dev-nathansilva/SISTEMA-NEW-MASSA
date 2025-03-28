@@ -2,7 +2,7 @@
 
 import "@/app/globals.css";
 import { createContext, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { destroyCookie, parseCookies } from "nookies";
 import {
@@ -21,6 +21,7 @@ import { TbAlertOctagonFilled } from "react-icons/tb";
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
+  const searchParams = useSearchParams();
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false); // Estado para exibir o diálogo
   const router = useRouter();
@@ -30,13 +31,16 @@ export default function AuthProvider({ children }) {
     const checkAuth = async () => {
       const cookies = parseCookies();
       const token = cookies.token;
+      const urlTokenVerify = searchParams.get("token");
 
       if (pathname === "/") return;
 
-      if (!token) {
+      if (!token && !urlTokenVerify) {
         router.push("/login");
         return;
       }
+
+      if (urlTokenVerify) return;
 
       try {
         const res = await axios.get(
@@ -55,7 +59,7 @@ export default function AuthProvider({ children }) {
     checkAuth();
     const interval = setInterval(checkAuth, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [pathname, router]);
+  }, [searchParams, pathname, router]);
 
   const handleClose = () => {
     setError(false);
