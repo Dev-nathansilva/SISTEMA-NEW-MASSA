@@ -4,7 +4,7 @@ import "@/app/globals.css";
 import { createContext, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
-import { destroyCookie, parseCookies } from "nookies";
+import Cookies from "js-cookie";
 import {
   DialogRoot,
   DialogBackdrop,
@@ -29,8 +29,7 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const cookies = parseCookies();
-      const token = cookies.token;
+      const token = Cookies.get("token");
       const urlTokenVerify = searchParams.get("token");
 
       if (pathname === "/") return;
@@ -51,7 +50,7 @@ export default function AuthProvider({ children }) {
         );
         setUser(res.data.user);
       } catch (error) {
-        destroyCookie(null, "token");
+        Cookies.remove("token");
         setError(true); // Ativa o diálogo de erro
       }
     };
