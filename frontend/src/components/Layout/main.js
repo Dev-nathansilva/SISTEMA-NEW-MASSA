@@ -114,9 +114,7 @@ export default function MainLayout({ user, permissions }) {
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           toggleRightPanel={() => setIsRightPanelOpen(!isRightPanelOpen)}
         />
-        <Box className="conteudo" flex="1">
-          {getPageContent}
-        </Box>
+        <Box className="conteudo">{getPageContent}</Box>
       </Box>
 
       {isRightPanelOpen && (

@@ -11,6 +11,7 @@ import usePopupManager from "../hooks/popupmanager";
 import { useCallback } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+import "../../src/styles/tabela.css";
 
 const filtrosIniciais = {
   status: [],
@@ -468,7 +469,6 @@ export default function ClientesTable() {
   return (
     <div>
       <CustomTable
-        title="Lista de Clientes"
         data={filteredClientes}
         columns={columns}
         setColumnOrder={setColumnOrder}

@@ -1,11 +1,13 @@
 import ClientesTable from "@/Tabelas/ClientesTable";
+import { IoPeopleSharp } from "react-icons/io5";
 
 export default function ClientesPage() {
   return (
     <div>
-      <h2>Clientes</h2>
-      <p>Este é o conteúdo do Clientes.</p>
-
+      <div className="flex items-center gap-3 mb-3">
+        <IoPeopleSharp className="text-[25px]" />{" "}
+        <p className="title-session css-1y67omq">Gerenciamento dos Clientes</p>
+      </div>
       <ClientesTable></ClientesTable>
     </div>
   );

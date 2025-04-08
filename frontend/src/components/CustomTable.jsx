@@ -24,7 +24,6 @@ import usePopupManager from "../hooks/popupmanager";
 import { LuSettings2 } from "react-icons/lu";
 
 export default function CustomTable({
-  title,
   data,
   setColumnOrder,
   columns,
@@ -148,18 +147,17 @@ export default function CustomTable({
   };
 
   return (
-    <div className="p-6 max-w-[80%] mx-auto bg-gray-50 rounded-lg shadow-lg relative">
-      <h1 className="text-xl font-bold mb-4">{title}</h1>
+    <div className="container-custom-table relative">
       <div className="relative flex gap-3 items-center">
         {/* CAMPO DE PESQUISA */}
-        <div className="w-[50%] flex items-center bg-white rounded-md shadow p-3">
+        <div className="input-pesquisa w-[400px] flex items-center p-3">
           <FiSearch className="text-gray-400 mr-2" />
           <input
             type="text"
             placeholder="Pesquisar..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-full focus:outline-none"
+            className="w-full bg-transparent focus:outline-none"
           />
         </div>
         {/* <button className="px-4 py-3 bg-black text-white rounded-md">
@@ -283,10 +281,10 @@ export default function CustomTable({
       )}
 
       {/* Contêiner de tabela com overflow-x-auto */}
-      <div className="overflow-x-auto min-h-[350px]">
+      <div className="overflow-auto min-h-[350px] max-h-[500px]">
         <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={columns.map((col) => col.id)}>
-            <table className="w-full table-fixed  border-separate border-spacing-y-3">
+            <table className=" table-fixed  border-separate border-spacing-y-3">
               <thead className="bg-white">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
