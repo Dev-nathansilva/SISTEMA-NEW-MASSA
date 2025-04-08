@@ -1,5 +1,5 @@
 const permissions = {
-  padrao: [
+  admin: [
     "Dashboard",
     "Cadastros",
     "Vendas",
@@ -10,7 +10,7 @@ const permissions = {
     "Usuários",
   ],
   vendedor: ["Vendas", "Emissões.Duplicata"],
-  admin: ["Controle"],
+  padrao: ["Controle"],
 };
 
 module.exports = permissions;

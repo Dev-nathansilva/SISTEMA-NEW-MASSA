@@ -4,6 +4,7 @@ const userRoutes = require("./routes/userRoutes");
 const homeRoutes = require("./routes/homeRoutes");
 const passwordResetRoutes = require("./routes/passwordReset");
 const VerifyTokenRoutes = require("./routes/VerifyToken");
+const clientesRoutes = require("./routes/clienteRoutes");
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use("/api", homeRoutes);
 app.use("/api", passwordResetRoutes);
 
 app.use("/api", VerifyTokenRoutes);
+
+app.use("/api", clientesRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend rodando corretamente!");

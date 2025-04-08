@@ -23,3 +23,28 @@ model User {
   passwordResetExpires DateTime?
   
 }
+
+
+enum Status {
+  Ativo
+  Inativo
+}
+
+enum Tipo {
+  PessoaFisica
+  PessoaJuridica
+  Empresa
+}
+
+
+model Cliente {
+  id                 Int      @id @default(autoincrement())
+  nome               String
+  tipo               Tipo   // Ex: "Pessoa Física", "Pessoa Jurídica", "Empresa"
+  documento          String   // CPF ou CNPJ
+  email              String
+  telefone           String
+  inscricaoEstadual  String
+  dataCadastro       DateTime @default(now())
+  status             Status  @default(Ativo)
+}
