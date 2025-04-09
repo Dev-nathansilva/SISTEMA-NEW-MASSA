@@ -52,9 +52,10 @@ export default function Topbar({
 
       <Box className="flex items-center">
         <Box className="group-actions">
-          <InputGroup flex="1" startElement={<LuSearch />}>
-            <Input className="input-pesquisa" placeholder="Pesquisar" />
-          </InputGroup>
+          <Box className="icon-action-topbar">
+            <LuSearch color="black" />
+          </Box>
+
           <Box className="icon-action-topbar" onClick={toggleRightPanel}>
             <FiBell bg="transparent" color="black" />
             <Float offsetY="2" offsetX={2}>

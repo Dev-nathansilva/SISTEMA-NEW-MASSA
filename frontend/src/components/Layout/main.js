@@ -56,11 +56,78 @@ export default function MainLayout({ user, permissions }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
 
+  // useEffect(() => {
+  //   // Tenta recuperar a última página acessada
+  //   const storedPage = localStorage.getItem("activePage");
+  //   if (storedPage) {
+  //     try {
+  //       const parsedPage = JSON.parse(storedPage);
+  //       if (
+  //         pages[`${parsedPage.main}.${parsedPage.sub}`] ||
+  //         pages[parsedPage.main]
+  //       ) {
+  //         setActivePage(parsedPage);
+  //         return;
+  //       }
+  //     } catch (error) {
+  //       console.error("Erro ao recuperar a página do localStorage:", error);
+  //     }
+  //   }
+
+  //   // Fallback: define a primeira página permitida
+  //   if (permissions.length) {
+  //     let firstPage = permissions[0];
+
+  //     if (!pages[firstPage]) {
+  //       const category = permissions.find((perm) => !perm.includes("."));
+  //       if (category) {
+  //         const firstSubmenu = Object.keys(pages).find((page) =>
+  //           page.startsWith(`${category}.`)
+  //         );
+  //         if (firstSubmenu) {
+  //           firstPage = firstSubmenu;
+  //         }
+  //       }
+
+  //       if (!firstPage || !pages[firstPage]) {
+  //         firstPage =
+  //           permissions.find((perm) => perm.includes(".")) || firstPage;
+  //       }
+  //     }
+
+  //     const [main, sub] = firstPage.split(".");
+  //     setActivePage({ main, sub: sub || "" });
+  //   }
+  // }, [permissions]);
+
+  // useEffect(() => {
+  //   if (activePage.main) {
+  //     localStorage.setItem("activePage", JSON.stringify(activePage));
+  //   }
+  // }, [activePage]);
+
   useEffect(() => {
+    // Tenta recuperar a última página acessada na sessão
+    const storedPage = sessionStorage.getItem("activePage");
+    if (storedPage) {
+      try {
+        const parsedPage = JSON.parse(storedPage);
+        if (
+          pages[`${parsedPage.main}.${parsedPage.sub}`] ||
+          pages[parsedPage.main]
+        ) {
+          setActivePage(parsedPage);
+          return;
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar a página do sessionStorage:", error);
+      }
+    }
+
+    // Fallback: define a primeira página permitida
     if (permissions.length) {
       let firstPage = permissions[0];
 
-      // Se for uma categoria, buscar o primeiro submenu correspondente
       if (!pages[firstPage]) {
         const category = permissions.find((perm) => !perm.includes("."));
         if (category) {
@@ -72,7 +139,6 @@ export default function MainLayout({ user, permissions }) {
           }
         }
 
-        // Se não encontrar submenu, pegar o primeiro disponível na lista
         if (!firstPage || !pages[firstPage]) {
           firstPage =
             permissions.find((perm) => perm.includes(".")) || firstPage;
@@ -83,6 +149,12 @@ export default function MainLayout({ user, permissions }) {
       setActivePage({ main, sub: sub || "" });
     }
   }, [permissions]);
+
+  useEffect(() => {
+    if (activePage.main) {
+      sessionStorage.setItem("activePage", JSON.stringify(activePage));
+    }
+  }, [activePage]);
 
   const getPageContent = useMemo(() => {
     if (activePage.sub) {

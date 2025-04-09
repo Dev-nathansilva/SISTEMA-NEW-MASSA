@@ -11,7 +11,7 @@ import usePopupManager from "../hooks/popupmanager";
 import { useCallback } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import "../../src/styles/tabela.css";
+import "../../src/styles/Pages.css";
 
 const filtrosIniciais = {
   status: [],

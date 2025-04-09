@@ -6,7 +6,7 @@ export default function ClientesPage() {
     <div>
       <div className="flex items-center gap-3 mb-3">
         <IoPeopleSharp className="text-[25px]" />{" "}
-        <p className="title-session css-1y67omq">Gerenciamento dos Clientes</p>
+        <p className="title-session text-[20px]">Gerenciamento dos Clientes</p>
       </div>
       <ClientesTable></ClientesTable>
     </div>

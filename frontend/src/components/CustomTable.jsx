@@ -22,6 +22,7 @@ import { IoBrowsersOutline } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import usePopupManager from "../hooks/popupmanager";
 import { LuSettings2 } from "react-icons/lu";
+import { Input, InputGroup } from "@chakra-ui/react";
 
 export default function CustomTable({
   data,
@@ -182,21 +183,25 @@ export default function CustomTable({
     <div className=" relative">
       <div className="relative flex gap-3 items-center">
         {/* CAMPO DE PESQUISA */}
-        <div className="input-pesquisa w-[400px] flex items-center p-3">
-          <FiSearch className="text-gray-400 mr-2" />
-          <input
-            type="text"
-            placeholder="Pesquisar..."
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-full bg-transparent focus:outline-none"
-          />
+        <div className="w-[400px] ">
+          <InputGroup
+            flex="1"
+            startElement={<FiSearch className="text-gray-400" />}
+          >
+            <Input
+              type="text"
+              className="input-pesquisa focus-visible:outline-gray-400 text-gray-400"
+              placeholder="Pesquisar..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+          </InputGroup>
         </div>
         {/* <button className="px-4 py-3 bg-black text-white rounded-md">
           Filtros
         </button> */}
         <button
-          className="px-4 py-3 bg-gray-200 hover:bg-gray-300 cursor-pointer text-black rounded-md text-[20px] border border-gray-300"
+          className="px-3 py-2 bg-gray-200 hover:bg-gray-300 cursor-pointer text-black rounded-[10px] text-[20px] border border-gray-300"
           onClick={() => togglePopup("func")}
         >
           <LuSettings2 />
@@ -316,7 +321,7 @@ export default function CustomTable({
       {/* mx-auto min-h-[350px] max-h-[450px] w-full */}
       <div
         ref={scrollRef}
-        className={`scroll-container min-h-[350px]  ${
+        className={`scroll-container min-h-[50vh] max-h-[50vh]  ${
           isDragging ? "dragging" : ""
         }`}
         onMouseDown={handleMouseDownScroll}
@@ -328,8 +333,8 @@ export default function CustomTable({
           <SortableContext items={columns.map((col) => col.id)}>
             {/* w-full min-w-fit */}
 
-            <table className=" table-fixed  border-separate border-spacing-y-3">
-              <thead className="bg-white">
+            <table className=" table-fixed border-spacing-y-3  border-separate  relative">
+              <thead className="bg-[white] sticky top-[12px] mt-[-12px] thead-table z-50">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -394,7 +399,7 @@ export default function CustomTable({
                   table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      className={`rounded-[10px] shadow-xs  ${
+                      className={` rounded-[10px] shadow-xs  ${
                         row.getIsSelected()
                           ? "bg-blue-100"
                           : "bg-white hover:bg-gray-100"
