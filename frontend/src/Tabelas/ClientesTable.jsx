@@ -35,7 +35,7 @@ export default function ClientesTable() {
       {
         key: "Tipo",
         label: "Tipo",
-        options: ["PessoaFisica", "PessoaJuridica", "Empresa"],
+        options: ["Pessoa Física", "Pessoa Jurídica", "Empresa"],
       },
     ],
     []
@@ -140,7 +140,12 @@ export default function ClientesTable() {
           id: cliente.id,
           Nome: cliente.nome,
           "CPF/CPNJ": cliente.documento,
-          Tipo: cliente.tipo,
+          Tipo:
+            {
+              PessoaFisica: "Pessoa Física",
+              PessoaJuridica: "Pessoa Jurídica",
+              Empresa: "Empresa",
+            }[cliente.tipo] || cliente.tipo,
           status: cliente.status,
           teste: "",
           Email: cliente.email,
