@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -146,6 +146,38 @@ export default function CustomTable({
     document.addEventListener("mouseup", handleMouseUp);
   };
 
+  // EFEITO SCROLL
+
+  const scrollRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const handleMouseDownScroll = (e) => {
+    isDragging.current = true;
+    startX.current = e.pageX - scrollRef.current.offsetLeft;
+    scrollLeft.current = scrollRef.current.scrollLeft;
+    scrollRef.current.classList.add("dragging");
+  };
+
+  const handleMouseLeaveScroll = () => {
+    isDragging.current = false;
+    scrollRef.current.classList.remove("dragging");
+  };
+
+  const handleMouseUpScroll = () => {
+    isDragging.current = false;
+    scrollRef.current.classList.remove("dragging");
+  };
+
+  const handleMouseMoveScroll = (e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.0; // menor fator = mais controlado
+    scrollRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
   return (
     <div className=" relative">
       <div className="relative flex gap-3 items-center">
@@ -282,10 +314,20 @@ export default function CustomTable({
 
       {/* Contêiner de tabela com overflow-x-auto */}
       {/* mx-auto min-h-[350px] max-h-[450px] w-full */}
-      <div className="overflow-auto min-h-[350px] max-h-[450px]">
+      <div
+        ref={scrollRef}
+        className={`scroll-container min-h-[350px]  ${
+          isDragging ? "dragging" : ""
+        }`}
+        onMouseDown={handleMouseDownScroll}
+        onMouseLeave={handleMouseLeaveScroll}
+        onMouseUp={handleMouseUpScroll}
+        onMouseMove={handleMouseMoveScroll}
+      >
         <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={columns.map((col) => col.id)}>
             {/* w-full min-w-fit */}
+
             <table className=" table-fixed  border-separate border-spacing-y-3">
               <thead className="bg-white">
                 {table.getHeaderGroups().map((headerGroup) => (
