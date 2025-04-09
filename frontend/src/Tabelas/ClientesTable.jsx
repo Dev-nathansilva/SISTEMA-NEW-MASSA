@@ -75,7 +75,7 @@ export default function ClientesTable() {
           status: 80,
           ações: 100,
         });
-      } else if (width < 1420) {
+      } else if (width >= 640 && width < 1420) {
         setColumnSizes({
           Nome: 200,
           "CPF/CPNJ": 200,
@@ -83,19 +83,43 @@ export default function ClientesTable() {
           status: 200,
           ações: 230,
         });
-      } else if (width < 1600) {
+      } else if (width >= 1420 && width < 1550) {
         setColumnSizes({
           Nome: 250,
-          "CPF/CPNJ": 260,
+          "CPF/CPNJ": 230,
           Tipo: 230,
-          status: 200,
+          status: 230,
           ações: 230,
+        });
+      } else if (width >= 1550 && width < 1600) {
+        setColumnSizes({
+          Nome: 380,
+          "CPF/CPNJ0": 260,
+          Tipo: 250,
+          status: 230,
+          ações: 230,
+        });
+      } else if (width >= 1600 && width < 1800) {
+        setColumnSizes({
+          Nome: 350,
+          "CPF/CPNJ": 260,
+          Tipo: 320,
+          status: 240,
+          ações: 240,
+        });
+      } else if (width >= 1800 && width < 1950) {
+        setColumnSizes({
+          Nome: 250,
+          "CPF/CPNJ": 360,
+          Tipo: 350,
+          status: 340,
+          ações: 240,
         });
       } else {
         setColumnSizes({
-          Nome: 320,
-          "CPF/CPNJ": 300,
-          Tipo: 250,
+          Nome: 420,
+          "CPF/CPNJ": 400,
+          Tipo: 350,
           status: 250,
           ações: 250,
         });

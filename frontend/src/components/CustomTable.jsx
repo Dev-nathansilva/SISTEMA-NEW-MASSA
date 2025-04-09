@@ -206,30 +206,28 @@ export default function CustomTable({
         >
           <LuSettings2 />
         </button>
+        {extraHeaderContent ? <div>{extraHeaderContent}</div> : <div></div>}
       </div>
 
-      <div className="my-2 px-4 flex w-full justify-between items-end">
-        {extraHeaderContent ? <div>{extraHeaderContent}</div> : <div></div>}
-        <div className="mr-4 flex items-center justify-end gap-2">
-          <label>Itens por página: </label>
-          <select
-            value={pagination.pageSize}
-            onChange={(e) =>
-              setPagination((prev) => ({
-                ...prev,
-                pageSize: Number(e.target.value),
-                pageIndex: 0,
-              }))
-            }
-            className="border p-1 rounded"
-          >
-            {[5, 10, 15].map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="mt-[-10px] mr-4 flex items-center justify-end gap-2">
+        <label>Itens por página: </label>
+        <select
+          value={pagination.pageSize}
+          onChange={(e) =>
+            setPagination((prev) => ({
+              ...prev,
+              pageSize: Number(e.target.value),
+              pageIndex: 0,
+            }))
+          }
+          className="border p-1 rounded"
+        >
+          {[5, 10, 15].map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
       </div>
 
       {popupStates.func && (
