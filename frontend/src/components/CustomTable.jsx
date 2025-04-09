@@ -147,7 +147,7 @@ export default function CustomTable({
   };
 
   return (
-    <div className="container-custom-table relative">
+    <div className=" relative">
       <div className="relative flex gap-3 items-center">
         {/* CAMPO DE PESQUISA */}
         <div className="input-pesquisa w-[400px] flex items-center p-3">
@@ -281,9 +281,11 @@ export default function CustomTable({
       )}
 
       {/* Contêiner de tabela com overflow-x-auto */}
-      <div className="overflow-auto min-h-[350px] max-h-[500px]">
+      {/* mx-auto min-h-[350px] max-h-[450px] w-full */}
+      <div className="overflow-auto min-h-[350px] max-h-[450px]">
         <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={columns.map((col) => col.id)}>
+            {/* w-full min-w-fit */}
             <table className=" table-fixed  border-separate border-spacing-y-3">
               <thead className="bg-white">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -359,7 +361,7 @@ export default function CustomTable({
                       {row.getVisibleCells().map((cell, index, array) => (
                         <td
                           key={cell.id}
-                          className={`p-4 text-left border border-gray-50 ${
+                          className={`truncate p-4 text-left border border-gray-50 ${
                             index === 0 ? "rounded-l-[10px]" : ""
                           } ${
                             index === array.length - 1 ? "rounded-r-[10px]" : ""

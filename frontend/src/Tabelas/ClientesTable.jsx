@@ -75,21 +75,29 @@ export default function ClientesTable() {
           status: 80,
           ações: 100,
         });
-      } else if (width < 1550) {
+      } else if (width < 1420) {
+        setColumnSizes({
+          Nome: 200,
+          "CPF/CPNJ": 200,
+          Tipo: 215,
+          status: 200,
+          ações: 230,
+        });
+      } else if (width < 1600) {
         setColumnSizes({
           Nome: 250,
-          "CPF/CPNJ": 200,
+          "CPF/CPNJ": 260,
           Tipo: 230,
-          status: 180,
-          ações: 130,
+          status: 200,
+          ações: 230,
         });
       } else {
         setColumnSizes({
-          Nome: 360,
+          Nome: 320,
           "CPF/CPNJ": 300,
-          Tipo: 280,
-          status: 180,
-          ações: 150,
+          Tipo: 250,
+          status: 250,
+          ações: 250,
         });
       }
     };
@@ -397,7 +405,7 @@ export default function ClientesTable() {
         enableHiding: true,
         size: 200,
       },
-      // COLUNA EMAIL
+      // COLUNA DATA DE CADASTRO
       {
         id: "Data de Cadastro",
         header: renderDateRangeFilterHeader,

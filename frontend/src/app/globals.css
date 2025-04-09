@@ -194,6 +194,7 @@ input:-webkit-autofill {
 
 .container-central {
   position: relative;
+  overflow: hidden;
 }
 
 /* TOPBAR */
@@ -299,4 +300,5 @@ input:-webkit-autofill {
 .conteudo {
   transition: padding 0.3s;
   padding: 130px 60px 16px 130px;
+  overflow: hidden;
 }
