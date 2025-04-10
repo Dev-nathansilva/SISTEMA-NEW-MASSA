@@ -63,73 +63,73 @@ export default function ClientesTable() {
     });
   };
 
-  useEffect(() => {
-    const updateSizes = () => {
-      const width = window.innerWidth;
+  // useEffect(() => {
+  //   const updateSizes = () => {
+  //     const width = window.innerWidth;
 
-      if (width < 640) {
-        setColumnSizes({
-          Nome: 100,
-          "CPF/CPNJ": 120,
-          Tipo: 100,
-          status: 80,
-          ações: 100,
-        });
-      } else if (width >= 640 && width < 1420) {
-        setColumnSizes({
-          Nome: 200,
-          "CPF/CPNJ": 200,
-          Tipo: 215,
-          status: 200,
-          ações: 230,
-        });
-      } else if (width >= 1420 && width < 1550) {
-        setColumnSizes({
-          Nome: 250,
-          "CPF/CPNJ": 230,
-          Tipo: 230,
-          status: 230,
-          ações: 230,
-        });
-      } else if (width >= 1550 && width < 1600) {
-        setColumnSizes({
-          Nome: 380,
-          "CPF/CPNJ0": 260,
-          Tipo: 250,
-          status: 230,
-          ações: 230,
-        });
-      } else if (width >= 1600 && width < 1800) {
-        setColumnSizes({
-          Nome: 350,
-          "CPF/CPNJ": 260,
-          Tipo: 320,
-          status: 240,
-          ações: 240,
-        });
-      } else if (width >= 1800 && width < 1950) {
-        setColumnSizes({
-          Nome: 250,
-          "CPF/CPNJ": 360,
-          Tipo: 350,
-          status: 340,
-          ações: 240,
-        });
-      } else {
-        setColumnSizes({
-          Nome: 420,
-          "CPF/CPNJ": 400,
-          Tipo: 350,
-          status: 250,
-          ações: 250,
-        });
-      }
-    };
+  //     if (width < 640) {
+  //       setColumnSizes({
+  //         Nome: 100,
+  //         "CPF/CPNJ": 120,
+  //         Tipo: 100,
+  //         status: 80,
+  //         ações: 100,
+  //       });
+  //     } else if (width >= 640 && width < 1420) {
+  //       setColumnSizes({
+  //         Nome: 200,
+  //         "CPF/CPNJ": 200,
+  //         Tipo: 215,
+  //         status: 200,
+  //         ações: 230,
+  //       });
+  //     } else if (width >= 1420 && width < 1550) {
+  //       setColumnSizes({
+  //         Nome: 250,
+  //         "CPF/CPNJ": 230,
+  //         Tipo: 230,
+  //         status: 230,
+  //         ações: 230,
+  //       });
+  //     } else if (width >= 1550 && width < 1600) {
+  //       setColumnSizes({
+  //         Nome: 380,
+  //         "CPF/CPNJ0": 260,
+  //         Tipo: 250,
+  //         status: 230,
+  //         ações: 230,
+  //       });
+  //     } else if (width >= 1600 && width < 1800) {
+  //       setColumnSizes({
+  //         Nome: 350,
+  //         "CPF/CPNJ": 260,
+  //         Tipo: 320,
+  //         status: 240,
+  //         ações: 240,
+  //       });
+  //     } else if (width >= 1800 && width < 1950) {
+  //       setColumnSizes({
+  //         Nome: 300,
+  //         "CPF/CPNJ": 300,
+  //         Tipo: 300,
+  //         status: 300,
+  //         ações: 300,
+  //       });
+  //     } else {
+  //       setColumnSizes({
+  //         Nome: 420,
+  //         "CPF/CPNJ": 400,
+  //         Tipo: 350,
+  //         status: 250,
+  //         ações: 250,
+  //       });
+  //     }
+  //   };
 
-    updateSizes(); // chama uma vez ao montar
-    window.addEventListener("resize", updateSizes); // escuta alterações
-    return () => window.removeEventListener("resize", updateSizes); // limpa
-  }, []);
+  //   updateSizes(); // chama uma vez ao montar
+  //   window.addEventListener("resize", updateSizes); // escuta alterações
+  //   return () => window.removeEventListener("resize", updateSizes); // limpa
+  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -363,7 +363,7 @@ export default function ClientesTable() {
         ),
         enableSorting: true,
         enableResizing: true,
-        size: columnSizes["Nome"] || 150,
+        minSize: 200,
       },
       // COLUNA CPF/CPNJ
       {
@@ -372,7 +372,7 @@ export default function ClientesTable() {
 
         enableSorting: true,
         enableResizing: true,
-        size: columnSizes["CPF/CPNJ"] || 150,
+        minSize: 200,
       },
       // COLUNA TIPO
       {
@@ -381,7 +381,7 @@ export default function ClientesTable() {
         header: () => renderFilterHeader("Tipo"),
         enableSorting: true,
         enableResizing: true,
-        size: columnSizes["Tipo"] || 150,
+        minSize: 200,
       },
       // COLUNA STATUS
       {
@@ -390,7 +390,7 @@ export default function ClientesTable() {
         header: () => renderFilterHeader("status"),
         enableSorting: true,
         enableResizing: true,
-        size: columnSizes["status"] || 150,
+        minSize: 200,
         cell: ({ getValue }) => (
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -416,7 +416,8 @@ export default function ClientesTable() {
           </div>
         ),
         enableResizing,
-        size: columnSizes["ações"] || 150,
+        size: 150,
+        minSize: 150,
       },
       // COLUNA EMAIL
       {
@@ -424,7 +425,7 @@ export default function ClientesTable() {
         header: "Email",
         accessorKey: "Email",
         enableHiding: true,
-        size: 320,
+        minSize: 300,
       },
       // COLUNA INSCRIÇÃO ESTADUAL
       {
@@ -432,7 +433,7 @@ export default function ClientesTable() {
         header: "Inscricao Estadual",
         accessorKey: "Inscricao Estadual",
         enableHiding: true,
-        size: 200,
+        minSize: 200,
       },
       // COLUNA DATA DE CADASTRO
       {
@@ -440,7 +441,7 @@ export default function ClientesTable() {
         header: renderDateRangeFilterHeader,
         accessorKey: "Data de Cadastro",
         enableHiding: true,
-        size: 200,
+        minSize: 300,
       },
     ];
 

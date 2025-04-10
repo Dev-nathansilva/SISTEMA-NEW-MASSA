@@ -319,7 +319,7 @@ export default function CustomTable({
       {/* mx-auto min-h-[350px] max-h-[450px] w-full */}
       <div
         ref={scrollRef}
-        className={`scroll-container min-h-[50vh] max-h-[50vh]  ${
+        className={`scroll-container min-h-[50vh]   ${
           isDragging ? "dragging" : ""
         }`}
         onMouseDown={handleMouseDownScroll}
@@ -331,7 +331,7 @@ export default function CustomTable({
           <SortableContext items={columns.map((col) => col.id)}>
             {/* w-full min-w-fit */}
 
-            <table className=" table-fixed border-spacing-y-3  border-separate  relative">
+            <table className="min-w-full border-spacing-y-3 border-separate  relative">
               <thead className="bg-[white] sticky top-[12px] mt-[-12px] thead-table z-50">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
@@ -406,7 +406,7 @@ export default function CustomTable({
                       {row.getVisibleCells().map((cell, index, array) => (
                         <td
                           key={cell.id}
-                          className={`truncate p-4 text-left border border-gray-50 ${
+                          className={`max-w-[20px] truncate p-5 text-left border-b  ${
                             index === 0 ? "rounded-l-[10px]" : ""
                           } ${
                             index === array.length - 1 ? "rounded-r-[10px]" : ""
