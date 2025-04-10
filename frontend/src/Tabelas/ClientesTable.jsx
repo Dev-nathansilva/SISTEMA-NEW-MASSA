@@ -41,6 +41,45 @@ export default function ClientesTable() {
     []
   );
 
+  const [hiddenColumns, setHiddenColumns] = useState([
+    "Email",
+    "Inscricao Estadual",
+    "Data de Cadastro",
+  ]);
+
+  useEffect(() => {
+    const updateHiddenColumns = () => {
+      const width = window.innerWidth;
+      let newHiddenColumns = [];
+
+      if (width <= 1140) {
+        newHiddenColumns = ["Email", "Inscricao Estadual", "Data de Cadastro"];
+      } else if (width <= 1339) {
+        newHiddenColumns = [
+          "Email",
+          "Inscricao Estadual",
+          "Data de Cadastro",
+          "CPF/CNPJ",
+        ];
+      } else if (width <= 1639) {
+        newHiddenColumns = ["Email", "Inscricao Estadual", "Data de Cadastro"];
+      } else if (width <= 1920) {
+        newHiddenColumns = ["Inscricao Estadual", "Data de Cadastro"];
+      } else {
+        newHiddenColumns = [];
+      }
+
+      setHiddenColumns(newHiddenColumns);
+    };
+
+    updateHiddenColumns();
+
+    window.addEventListener("resize", updateHiddenColumns);
+    return () => {
+      window.removeEventListener("resize", updateHiddenColumns);
+    };
+  }, []);
+
   const toggleFilterValue = (filterKey, value) => {
     setFilters((prev) => {
       const current = prev[filterKey] || [];
@@ -63,74 +102,6 @@ export default function ClientesTable() {
     });
   };
 
-  // useEffect(() => {
-  //   const updateSizes = () => {
-  //     const width = window.innerWidth;
-
-  //     if (width < 640) {
-  //       setColumnSizes({
-  //         Nome: 100,
-  //         "CPF/CPNJ": 120,
-  //         Tipo: 100,
-  //         status: 80,
-  //         ações: 100,
-  //       });
-  //     } else if (width >= 640 && width < 1420) {
-  //       setColumnSizes({
-  //         Nome: 200,
-  //         "CPF/CPNJ": 200,
-  //         Tipo: 215,
-  //         status: 200,
-  //         ações: 230,
-  //       });
-  //     } else if (width >= 1420 && width < 1550) {
-  //       setColumnSizes({
-  //         Nome: 250,
-  //         "CPF/CPNJ": 230,
-  //         Tipo: 230,
-  //         status: 230,
-  //         ações: 230,
-  //       });
-  //     } else if (width >= 1550 && width < 1600) {
-  //       setColumnSizes({
-  //         Nome: 380,
-  //         "CPF/CPNJ0": 260,
-  //         Tipo: 250,
-  //         status: 230,
-  //         ações: 230,
-  //       });
-  //     } else if (width >= 1600 && width < 1800) {
-  //       setColumnSizes({
-  //         Nome: 350,
-  //         "CPF/CPNJ": 260,
-  //         Tipo: 320,
-  //         status: 240,
-  //         ações: 240,
-  //       });
-  //     } else if (width >= 1800 && width < 1950) {
-  //       setColumnSizes({
-  //         Nome: 300,
-  //         "CPF/CPNJ": 300,
-  //         Tipo: 300,
-  //         status: 300,
-  //         ações: 300,
-  //       });
-  //     } else {
-  //       setColumnSizes({
-  //         Nome: 420,
-  //         "CPF/CPNJ": 400,
-  //         Tipo: 350,
-  //         status: 250,
-  //         ações: 250,
-  //       });
-  //     }
-  //   };
-
-  //   updateSizes(); // chama uma vez ao montar
-  //   window.addEventListener("resize", updateSizes); // escuta alterações
-  //   return () => window.removeEventListener("resize", updateSizes); // limpa
-  // }, []);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -139,7 +110,7 @@ export default function ClientesTable() {
         const mappedData = data.map((cliente) => ({
           id: cliente.id,
           Nome: cliente.nome,
-          "CPF/CPNJ": cliente.documento,
+          "CPF/CNPJ": cliente.documento,
           Tipo:
             {
               PessoaFisica: "Pessoa Física",
@@ -153,6 +124,7 @@ export default function ClientesTable() {
           "Data de Cadastro": formatarData(cliente.dataCadastro),
           dataCadastroRaw: cliente.dataCadastro,
         }));
+
         setClientes(mappedData);
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
@@ -296,7 +268,7 @@ export default function ClientesTable() {
     "Selecionar",
     "Nome",
     "Tipo",
-    "CPF/CPNJ",
+    "CPF/CNPJ",
     "status",
     "Email",
     "Inscricao Estadual",
@@ -365,10 +337,10 @@ export default function ClientesTable() {
         enableResizing: true,
         minSize: 200,
       },
-      // COLUNA CPF/CPNJ
+      // COLUNA CPF/CNPJ
       {
-        id: "CPF/CPNJ",
-        accessorKey: "CPF/CPNJ",
+        id: "CPF/CNPJ",
+        accessorKey: "CPF/CNPJ",
 
         enableSorting: true,
         enableResizing: true,
@@ -456,12 +428,6 @@ export default function ClientesTable() {
     renderDateRangeFilterHeader,
   ]);
 
-  const initiallyHiddenColumns = [
-    "Email",
-    "Inscricao Estadual",
-    "Data de Cadastro",
-  ];
-
   const filteredClientes = useMemo(() => {
     return clientes.filter((cliente) => {
       const matchesFilter = filterConfig.every(({ key }) => {
@@ -512,7 +478,7 @@ export default function ClientesTable() {
         setColumnOrder={setColumnOrder}
         enableResizing={enableResizing}
         setEnableResizing={setEnableResizing}
-        initiallyHiddenColumns={initiallyHiddenColumns}
+        initiallyHiddenColumns={hiddenColumns}
         extraHeaderContent={
           temFiltrosAtivos ? (
             <BotaoLimparFiltros onClick={() => setFilters(filtrosIniciais)} />

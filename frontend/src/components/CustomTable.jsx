@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -178,6 +178,16 @@ export default function CustomTable({
     const walk = (x - startX.current) * 1.0; // menor fator = mais controlado
     scrollRef.current.scrollLeft = scrollLeft.current - walk;
   };
+
+  useEffect(() => {
+    setVisibleColumns((prev) => {
+      const updated = { ...prev };
+      columns.forEach((col) => {
+        updated[col.id] = !initiallyHiddenColumns.includes(col.id);
+      });
+      return updated;
+    });
+  }, [initiallyHiddenColumns, columns]);
 
   return (
     <div className=" relative">
