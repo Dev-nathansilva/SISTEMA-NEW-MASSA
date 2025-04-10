@@ -36,7 +36,8 @@
     "react-leaflet": "^5.0.0",
     "react-map-gl": "^8.0.1",
     "recharts": "^2.15.1",
-    "rsuite": "^5.78.0"
+    "rsuite": "^5.78.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
