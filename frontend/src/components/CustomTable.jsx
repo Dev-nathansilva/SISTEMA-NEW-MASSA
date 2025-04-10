@@ -200,12 +200,100 @@ export default function CustomTable({
         {/* <button className="px-4 py-3 bg-black text-white rounded-md">
           Filtros
         </button> */}
-        <button
-          className="px-3 py-2 bg-gray-200 hover:bg-gray-300 cursor-pointer text-black rounded-[10px] text-[20px] border border-gray-300"
-          onClick={() => togglePopup("func")}
-        >
-          <LuSettings2 />
-        </button>
+
+        <div className="relative">
+          <button
+            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 cursor-pointer text-black rounded-[10px] text-[20px] border border-gray-300"
+            onClick={() => togglePopup("func")}
+          >
+            <LuSettings2 />
+          </button>
+          {popupStates.func && (
+            <div
+              ref={popupRefs.func}
+              className="absolute z-[1000] mt-2 w-[500px] bg-white border border-gray-300 shadow-xl rounded-lg p-6"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Funcionalidades</h2>
+                <button onClick={() => closePopup("func")}>✖</button>
+              </div>
+
+              {/* Conteúdo de funcionalidades aqui */}
+              <div className="flex flex-col gap-4">
+                {/* Redimensionamento */}
+                <div className="flex gap-2 items-center">
+                  <input
+                    className="switch"
+                    type="checkbox"
+                    checked={enableResizing}
+                    onChange={() => setEnableResizing((prev) => !prev)}
+                  />
+                  <span>Redimensionamento</span>
+                </div>
+
+                {/* Reordenação */}
+                <div className="flex gap-2 items-center">
+                  <input
+                    className="switch"
+                    type="checkbox"
+                    checked={enableDragging}
+                    onChange={() => setEnableDragging((prev) => !prev)}
+                  />
+                  <span>Ativar Reordenação de Colunas</span>
+                </div>
+
+                {/* OCULTAR / EXIBIR */}
+                <div className="relative inline-block">
+                  <button
+                    onClick={() => togglePopup("columns")}
+                    className="flex items-center gap-3 px-4 py-2 bg-black text-white rounded-md"
+                  >
+                    Ocultar/Exibir Colunas <IoIosArrowForward />
+                  </button>
+
+                  {popupStates.columns && (
+                    <div
+                      ref={popupRefs.columns}
+                      className="absolute z-[1000] mr-[-33px] right-0 top-0 w-64 bg-white border border-gray-300 shadow-lg rounded-md p-4"
+                    >
+                      {/* Checkbox para selecionar/desmarcar todas as colunas */}
+                      <label className="block font-medium mb-2">
+                        <input
+                          type="checkbox"
+                          checked={Object.values(visibleColumns).every(Boolean)}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const updatedColumns = {};
+                            columns.forEach((col) => {
+                              updatedColumns[col.id] = isChecked;
+                            });
+                            setVisibleColumns(updatedColumns);
+                          }}
+                          className="mr-2"
+                        />
+                        Selecionar/Desmarcar Tudo
+                      </label>
+
+                      {/* Checkboxes individuais para cada coluna */}
+                      {columns.map((col) => (
+                        <label key={col.id} className="block">
+                          <input
+                            type="checkbox"
+                            checked={visibleColumns[col.id]}
+                            onChange={() => toggleColumnVisibility(col.id)}
+                            className="mr-2"
+                          />
+                          {col.id}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {extraHeaderContent ? <div>{extraHeaderContent}</div> : <div></div>}
       </div>
 
@@ -230,96 +318,11 @@ export default function CustomTable({
         </select>
       </div>
 
-      {popupStates.func && (
-        <div
-          ref={popupRefs.func}
-          className="absolute z-[1000] top-30 left-[53%] -translate-x-1/2 w-[500px] bg-white border border-gray-300 shadow-xl rounded-lg p-6"
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Funcionalidades</h2>
-            <button onClick={() => closePopup("func")}>✖</button>
-          </div>
-
-          {/* Conteúdo de funcionalidades aqui */}
-          <div className="flex flex-col gap-4">
-            {/* Redimensionamento */}
-            <div className="flex gap-2 items-center">
-              <input
-                className="switch"
-                type="checkbox"
-                checked={enableResizing}
-                onChange={() => setEnableResizing((prev) => !prev)}
-              />
-              <span>Redimensionamento</span>
-            </div>
-
-            {/* Reordenação */}
-            <div className="flex gap-2 items-center">
-              <input
-                className="switch"
-                type="checkbox"
-                checked={enableDragging}
-                onChange={() => setEnableDragging((prev) => !prev)}
-              />
-              <span>Ativar Reordenação de Colunas</span>
-            </div>
-
-            {/* OCULTAR / EXIBIR */}
-            <div className="relative inline-block">
-              <button
-                onClick={() => togglePopup("columns")}
-                className="flex items-center gap-3 px-4 py-2 bg-black text-white rounded-md"
-              >
-                Ocultar/Exibir Colunas <IoIosArrowForward />
-              </button>
-
-              {popupStates.columns && (
-                <div
-                  ref={popupRefs.columns}
-                  className="absolute z-[1000] mr-[-33px] right-0 top-0 w-64 bg-white border border-gray-300 shadow-lg rounded-md p-4"
-                >
-                  {/* Checkbox para selecionar/desmarcar todas as colunas */}
-                  <label className="block font-medium mb-2">
-                    <input
-                      type="checkbox"
-                      checked={Object.values(visibleColumns).every(Boolean)}
-                      onChange={(e) => {
-                        const isChecked = e.target.checked;
-                        const updatedColumns = {};
-                        columns.forEach((col) => {
-                          updatedColumns[col.id] = isChecked;
-                        });
-                        setVisibleColumns(updatedColumns);
-                      }}
-                      className="mr-2"
-                    />
-                    Selecionar/Desmarcar Tudo
-                  </label>
-
-                  {/* Checkboxes individuais para cada coluna */}
-                  {columns.map((col) => (
-                    <label key={col.id} className="block">
-                      <input
-                        type="checkbox"
-                        checked={visibleColumns[col.id]}
-                        onChange={() => toggleColumnVisibility(col.id)}
-                        className="mr-2"
-                      />
-                      {col.id}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Contêiner de tabela com overflow-x-auto */}
       {/* mx-auto min-h-[350px] max-h-[450px] w-full */}
       <div
         ref={scrollRef}
-        className={`scroll-container min-h-[50vh]   ${
+        className={`scroll-container min-h-[40vh] max-h-[55vh] ${
           isDragging ? "dragging" : ""
         }`}
         onMouseDown={handleMouseDownScroll}
@@ -332,15 +335,18 @@ export default function CustomTable({
             {/* w-full min-w-fit */}
 
             <table className="min-w-full border-spacing-y-3 border-separate  relative">
-              <thead className="bg-[white] sticky top-[12px] mt-[-12px] thead-table z-50">
+              <thead className="bg-[#f5f5f6] sticky top-[12px] mt-[-12px] thead-table z-50 ">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className={`${
+                        className={`bg-[#fcfcfc] ${
                           enableDragging ? "" : "p-4"
-                        } text-left font-semibold relative first:rounded-l-[10px] last:rounded-r-[10px]`}
+                        } text-left font-semibold relative first:rounded-l-[10px] 
+                        last:rounded-r-[10px] border-y border-[#eff0f1] first:border 
+                        first:border-r-transparent first:border-l-[#eff0f1] 
+                        last:border last:border-l-transparent last:border-r-[#eff0f1]  text-[#1f383c] `}
                         style={{
                           minWidth: header.getSize(),
                           width: header.getSize(),
@@ -387,7 +393,7 @@ export default function CustomTable({
                   <tr>
                     <td
                       colSpan={columns.length}
-                      className="  border border-[#e7e7e7] rounded-[10px] p-4 text-gray-500 text-center"
+                      className=" border-[#e7e7e7] rounded-[10px] p-4 text-gray-500 text-center"
                     >
                       <FiAlertOctagon className="inline-block mr-2 mt-[-2px]" />{" "}
                       Nenhum item encontrado
@@ -406,9 +412,12 @@ export default function CustomTable({
                       {row.getVisibleCells().map((cell, index, array) => (
                         <td
                           key={cell.id}
-                          className={`max-w-[20px] truncate p-5 text-left border-b  ${
-                            index === 0 ? "rounded-l-[10px]" : ""
-                          } ${
+                          title={String(cell.getValue() ?? "")}
+                          className={`max-w-[20px] truncate p-5 text-left  border-y border-[#e0e0e0] first:border 
+                        first:border-r-transparent first:border-l-[#e0e0e0] 
+                        last:border last:border-l-transparent last:border-r-[#e0e0e0] ${
+                          index === 0 ? "rounded-l-[10px]" : ""
+                        } ${
                             index === array.length - 1 ? "rounded-r-[10px]" : ""
                           }`}
                         >
