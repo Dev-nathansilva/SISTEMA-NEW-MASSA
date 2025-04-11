@@ -174,7 +174,7 @@ export default function CustomTable({
       });
       return updated;
     });
-  }, [initiallyHiddenColumns, columns]);
+  }, [initiallyHiddenColumns]);
 
   return (
     <div className=" relative">
