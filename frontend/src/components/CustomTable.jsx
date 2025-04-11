@@ -421,7 +421,7 @@ export default function CustomTable({
                     <tr
                       key={row.id}
                       onClick={() => onRowClick?.(row.original)}
-                      className={` rounded-[10px] shadow-xs  ${
+                      className={`rounded-[10px] shadow-xs  ${
                         row.getIsSelected()
                           ? "bg-blue-100"
                           : "bg-white hover:bg-gray-100"

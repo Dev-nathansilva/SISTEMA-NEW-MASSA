@@ -22,6 +22,8 @@ export default function LogoutButton({ isOpen }) {
           duration: 1300,
         });
 
+        sessionStorage.clear();
+
         setTimeout(() => {
           window.location.href = "/login";
         }, 1000);
