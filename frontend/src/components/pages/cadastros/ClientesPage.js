@@ -3,12 +3,15 @@ import { Box, Button, Dialog, Portal, CloseButton } from "@chakra-ui/react";
 import { BsPrinterFill } from "react-icons/bs";
 import { IoPeopleSharp } from "react-icons/io5";
 import { LuPlus } from "react-icons/lu";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { FiRefreshCcw } from "react-icons/fi";
+import ClienteModal from "@/components/Modal";
 
 export default function ClientesPage() {
   const [isExporting, setIsExporting] = useState(false);
+  const [modalAberto, setModalAberto] = useState(false);
+  const fetchDataRef = useRef(null);
 
   const fetchData = async () => {
     const response = await fetch(
@@ -118,15 +121,24 @@ export default function ClientesPage() {
           <Button
             className="bg-blue-600 text-white px-4 rounded-md"
             variant="solid"
+            onClick={() => setModalAberto(true)}
           >
             <LuPlus /> Adicionar Novo
           </Button>
         </div>
       </div>
 
-      <div className="flex justify-end mb-4"></div>
+      <ClientesTable key={tableKey} fetchDataRef={fetchDataRef} />
 
-      <ClientesTable key={tableKey} />
+      <ClienteModal
+        isOpen={modalAberto}
+        onClose={() => setModalAberto(false)}
+        onClienteCriado={() => {
+          if (fetchDataRef.current) {
+            fetchDataRef.current();
+          }
+        }}
+      />
     </div>
   );
 }

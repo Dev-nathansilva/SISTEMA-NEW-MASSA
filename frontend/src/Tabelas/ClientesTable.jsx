@@ -22,7 +22,7 @@ const filtrosIniciais = {
   dataFinal: null,
 };
 
-export default function ClientesTable() {
+export default function ClientesTable({ fetchDataRef }) {
   const [clientes, setClientes] = useState([]);
   const [enableResizing, setEnableResizing] = useState(false);
   const [columnSizes, setColumnSizes] = useState({});
@@ -536,6 +536,12 @@ export default function ClientesTable() {
       toaster.error(error.message || "Erro inesperado ao excluir cliente.");
     }
   };
+
+  useEffect(() => {
+    if (fetchDataRef) {
+      fetchDataRef.current = fetchData;
+    }
+  }, [fetchData, fetchDataRef]);
 
   return (
     <div>
