@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CustomTable from "../components/CustomTable";
+import debounce from "lodash.debounce";
+
 import {
   BsChevronExpand,
   BsFillCaretUpFill,
@@ -25,6 +27,16 @@ export default function ClientesTable() {
   const [enableResizing, setEnableResizing] = useState(false);
   const [columnSizes, setColumnSizes] = useState({});
   const [filters, setFilters] = useState(filtrosIniciais);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const debouncedSearchHandler = useCallback(
+    debounce((value) => {
+      setDebouncedSearch(value);
+    }, 500),
+    []
+  );
+
   const filterConfig = useMemo(
     () => [
       {
@@ -46,6 +58,13 @@ export default function ClientesTable() {
     "Inscricao Estadual",
     "Data de Cadastro",
   ]);
+
+  //PAGINAÇÃO
+
+  const [totalItens, setTotalItens] = useState(0);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [itensPorPagina, setItensPorPagina] = useState(10);
 
   useEffect(() => {
     const updateHiddenColumns = () => {
@@ -105,9 +124,12 @@ export default function ClientesTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/clientes");
+        const response = await fetch(
+          `http://localhost:5000/api/clientes?page=${paginaAtual}&limit=${itensPorPagina}&search=${debouncedSearch}`
+        );
         const data = await response.json();
-        const mappedData = data.map((cliente) => ({
+
+        const mappedData = data.data.map((cliente) => ({
           id: cliente.id,
           Nome: cliente.nome,
           "CPF/CNPJ": cliente.documento,
@@ -126,13 +148,15 @@ export default function ClientesTable() {
         }));
 
         setClientes(mappedData);
+        setTotalPaginas(data.totalPages);
+        setTotalItens(data.total); // novo valor retornado pelo backend
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [debouncedSearch, paginaAtual, itensPorPagina]); // ⬅
 
   const renderFilterHeader = useCallback(
     (key) => {
@@ -484,6 +508,18 @@ export default function ClientesTable() {
             <BotaoLimparFiltros onClick={() => setFilters(filtrosIniciais)} />
           ) : null
         }
+        paginaAtual={paginaAtual}
+        totalPaginas={totalPaginas}
+        setPaginaAtual={setPaginaAtual}
+        totalItens={totalItens}
+        itensPorPagina={itensPorPagina}
+        onChangeItensPorPagina={(value) => {
+          setItensPorPagina(value);
+          setPaginaAtual(1);
+        }}
+        search={search}
+        onSearchChange={setSearch}
+        debouncedSearchHandler={debouncedSearchHandler}
       />
     </div>
   );

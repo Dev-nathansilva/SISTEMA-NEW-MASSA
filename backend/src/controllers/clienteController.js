@@ -2,10 +2,45 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getAllClientes = async (req, res) => {
+  const { page = 1, limit = 10, search = "" } = req.query;
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Number(limit);
+  const searchTerm = search.toLowerCase();
+
   try {
-    const clientes = await prisma.cliente.findMany();
-    res.json(clientes);
+    const [clientes, total] = await Promise.all([
+      prisma.cliente.findMany({
+        where: {
+          OR: [
+            { nome: { contains: searchTerm } },
+            { email: { contains: searchTerm } },
+            { documento: { contains: searchTerm } },
+          ],
+        },
+        skip,
+        take,
+        orderBy: { id: "desc" },
+      }),
+      prisma.cliente.count({
+        where: {
+          OR: [
+            { nome: { contains: searchTerm } },
+            { email: { contains: searchTerm } },
+            { documento: { contains: searchTerm } },
+          ],
+        },
+      }),
+    ]);
+
+    res.json({
+      data: clientes,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Erro ao buscar clientes." });
   }
 };

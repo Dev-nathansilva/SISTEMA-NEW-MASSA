@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+
 import {
   flexRender,
   getCoreRowModel,
@@ -32,8 +33,16 @@ export default function CustomTable({
   setEnableResizing,
   initiallyHiddenColumns,
   extraHeaderContent,
+  totalItens,
+  itensPorPagina,
+  onChangeItensPorPagina,
+  paginaAtual,
+  totalPaginas,
+  setPaginaAtual,
+  search,
+  onSearchChange,
+  debouncedSearchHandler,
 }) {
-  const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters] = useState([]);
   const [enableDragging, setEnableDragging] = useState(false);
 
@@ -77,24 +86,6 @@ export default function CustomTable({
     );
   }
 
-  // PAGINAÇÃO
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 5,
-  });
-  const totalPages = Math.ceil(data.length / pagination.pageSize);
-  const currentPage = pagination.pageIndex + 1;
-  const maxPagesToShow = 5;
-
-  const startPage = Math.max(
-    1,
-    Math.min(
-      currentPage - Math.floor(maxPagesToShow / 2),
-      totalPages - maxPagesToShow + 1
-    )
-  );
-  const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
-
   // COLUNAS VISÍVEIS
   const [visibleColumns, setVisibleColumns] = useState(() =>
     columns.reduce((acc, col) => {
@@ -118,15 +109,11 @@ export default function CustomTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     state: {
-      globalFilter,
       columnFilters,
-      pagination,
       columnVisibility: visibleColumns,
     },
-    onPaginationChange: setPagination,
     onColumnVisibilityChange: setVisibleColumns,
     enableColumnResizing: enableResizing,
     columnResizeMode: "onChange",
@@ -202,8 +189,11 @@ export default function CustomTable({
               type="text"
               className="input-pesquisa focus-visible:outline-gray-400 text-gray-400"
               placeholder="Pesquisar..."
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
+              value={search}
+              onChange={(e) => {
+                onSearchChange(e.target.value);
+                debouncedSearchHandler(e.target.value);
+              }}
             />
           </InputGroup>
         </div>
@@ -307,25 +297,25 @@ export default function CustomTable({
         {extraHeaderContent ? <div>{extraHeaderContent}</div> : <div></div>}
       </div>
 
-      <div className="mt-[-10px] mr-4 flex items-center justify-end gap-2">
-        <label>Itens por página: </label>
-        <select
-          value={pagination.pageSize}
-          onChange={(e) =>
-            setPagination((prev) => ({
-              ...prev,
-              pageSize: Number(e.target.value),
-              pageIndex: 0,
-            }))
-          }
-          className="border p-1 rounded"
-        >
-          {[5, 10, 15].map((size) => (
-            <option key={size} value={size}>
-              {size}
-            </option>
-          ))}
-        </select>
+      <div className="flex justify-between items-center mb-4">
+        <span className="text-sm text-gray-700">Total: {totalItens}</span>
+        <div className="flex items-center gap-2">
+          <label htmlFor="itensPorPagina" className="text-sm text-gray-700">
+            Itens por página:
+          </label>
+          <select
+            id="itensPorPagina"
+            value={itensPorPagina}
+            onChange={(e) => onChangeItensPorPagina(parseInt(e.target.value))}
+            className="border border-gray-300 rounded px-2 py-1 text-sm"
+          >
+            {[5, 10, 25, 50, 100].map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Contêiner de tabela com overflow-x-auto */}
@@ -445,62 +435,27 @@ export default function CustomTable({
           </SortableContext>
         </DndContext>
       </div>
-      {/* Paginador */}
-      <div className="flex justify-between mt-4 items-center">
-        <span className="flex items-center gap-1.5 bg-gray-100 border border-gray-400 p-2 rounded-2xl">
-          <IoBrowsersOutline />
-          Total: {data.length}
+      {/* Navegação: Paginação */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+          disabled={paginaAtual === 1}
+          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <span>
+          Página {paginaAtual} de {totalPaginas}
         </span>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setPagination((prev) => ({ ...prev, pageIndex: 0 }))}
-            disabled={pagination.pageIndex === 0}
-            className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-          >
-            <MdKeyboardDoubleArrowLeft />
-          </button>
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-          >
-            <MdKeyboardArrowLeft />
-          </button>
-          {Array.from(
-            { length: endPage - startPage + 1 },
-            (_, i) => startPage + i
-          ).map((page) => (
-            <button
-              key={page}
-              onClick={() =>
-                setPagination((prev) => ({ ...prev, pageIndex: page - 1 }))
-              }
-              className={`px-3 py-1 rounded-md ${
-                currentPage === page
-                  ? "bg-black text-white"
-                  : "bg-gray-100 border border-gray-300"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-          >
-            <MdKeyboardArrowRight />
-          </button>
-          <button
-            onClick={() =>
-              setPagination((prev) => ({ ...prev, pageIndex: totalPages - 1 }))
-            }
-            disabled={pagination.pageIndex === totalPages - 1}
-            className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-          >
-            <MdKeyboardDoubleArrowRight />
-          </button>
-        </div>
+        <button
+          onClick={() =>
+            setPaginaAtual((prev) => (prev < totalPaginas ? prev + 1 : prev))
+          }
+          disabled={paginaAtual === totalPaginas}
+          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Próxima
+        </button>
       </div>
       {isResizing && <div className="fixed inset-0 cursor-ew-resize z-50" />}
     </div>
