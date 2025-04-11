@@ -128,68 +128,69 @@ export default function ClientesTable() {
     });
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const params = new URLSearchParams({
-          page: paginaAtual,
-          limit: itensPorPagina,
-          search: debouncedSearch,
-        });
+  const fetchData = useCallback(async () => {
+    try {
+      const params = new URLSearchParams({
+        page: paginaAtual,
+        limit: itensPorPagina,
+        search: debouncedSearch,
+      });
 
-        // Adicionando os filtros
-        if (filters.status.length > 0) {
-          filters.status.forEach((status) => params.append("status", status));
-        }
-
-        if (filters.tipo.length > 0) {
-          filters.tipo.forEach((tipo) => params.append("tipo", tipo));
-        }
-        if (filters.dataInicial) {
-          const dataInicialUTC = new Date(filters.dataInicial);
-          dataInicialUTC.setUTCHours(0, 0, 0, 0);
-          params.append("dataInicial", dataInicialUTC.toISOString());
-        }
-
-        if (filters.dataFinal) {
-          const dataFinalUTC = new Date(filters.dataFinal);
-          dataFinalUTC.setUTCHours(23, 59, 59, 999); // Inclui o dia inteiro
-          params.append("dataFinal", dataFinalUTC.toISOString());
-        }
-
-        const response = await fetch(
-          `http://localhost:5000/api/clientes?${params.toString()}`
-        );
-        const data = await response.json();
-
-        const mappedData = data.data.map((cliente) => ({
-          id: cliente.id,
-          Nome: cliente.nome,
-          "CPF/CNPJ": cliente.documento,
-          tipo:
-            {
-              PessoaFisica: "Pessoa Física",
-              PessoaJuridica: "Pessoa Jurídica",
-              Empresa: "Empresa",
-            }[cliente.tipo] || cliente.tipo,
-          status: cliente.status,
-          teste: "",
-          Email: cliente.email,
-          "Inscricao Estadual": cliente.inscricaoEstadual,
-          "Data de Cadastro": formatarData(cliente.dataCadastro),
-          dataCadastroRaw: cliente.dataCadastro,
-        }));
-
-        setClientes(mappedData);
-        setTotalPaginas(data.totalPages);
-        setTotalItens(data.total);
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+      // Adicionando os filtros
+      if (filters.status.length > 0) {
+        filters.status.forEach((status) => params.append("status", status));
       }
-    };
 
+      if (filters.tipo.length > 0) {
+        filters.tipo.forEach((tipo) => params.append("tipo", tipo));
+      }
+
+      if (filters.dataInicial) {
+        const dataInicialUTC = new Date(filters.dataInicial);
+        dataInicialUTC.setUTCHours(0, 0, 0, 0);
+        params.append("dataInicial", dataInicialUTC.toISOString());
+      }
+
+      if (filters.dataFinal) {
+        const dataFinalUTC = new Date(filters.dataFinal);
+        dataFinalUTC.setUTCHours(23, 59, 59, 999);
+        params.append("dataFinal", dataFinalUTC.toISOString());
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/clientes?${params.toString()}`
+      );
+      const data = await response.json();
+
+      const mappedData = data.data.map((cliente) => ({
+        id: cliente.id,
+        Nome: cliente.nome,
+        "CPF/CNPJ": cliente.documento,
+        tipo:
+          {
+            PessoaFisica: "Pessoa Física",
+            PessoaJuridica: "Pessoa Jurídica",
+            Empresa: "Empresa",
+          }[cliente.tipo] || cliente.tipo,
+        status: cliente.status,
+        teste: "",
+        Email: cliente.email,
+        "Inscricao Estadual": cliente.inscricaoEstadual,
+        "Data de Cadastro": formatarData(cliente.dataCadastro),
+        dataCadastroRaw: cliente.dataCadastro,
+      }));
+
+      setClientes(mappedData);
+      setTotalPaginas(data.totalPages);
+      setTotalItens(data.total);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    }
+  }, [paginaAtual, itensPorPagina, debouncedSearch, filters]);
+
+  useEffect(() => {
     fetchData();
-  }, [debouncedSearch, paginaAtual, itensPorPagina, filters]);
+  }, [fetchData]);
 
   const renderFilterHeader = useCallback(
     (key) => {
@@ -526,7 +527,7 @@ export default function ClientesTable() {
           type: "success",
           duration: 3000,
         });
-        setClientes((prev) => prev.filter((c) => c.id !== id));
+        fetchData();
       } else {
         throw new Error("Erro ao excluir o cliente.");
       }
