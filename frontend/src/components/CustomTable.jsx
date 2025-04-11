@@ -42,7 +42,9 @@ export default function CustomTable({
   search,
   onSearchChange,
   debouncedSearchHandler,
+  onRowSelectionChange,
 }) {
+  const [rowSelection, setRowSelection] = useState({});
   const [columnFilters] = useState([]);
   const [enableDragging, setEnableDragging] = useState(false);
 
@@ -113,7 +115,20 @@ export default function CustomTable({
     state: {
       columnFilters,
       columnVisibility: visibleColumns,
+      rowSelection,
     },
+    onRowSelectionChange: (updater) => {
+      const newRowSelection =
+        typeof updater === "function" ? updater(rowSelection) : updater;
+      setRowSelection(newRowSelection);
+      if (onRowSelectionChange) {
+        const selectedRows = Object.keys(newRowSelection)
+          .map((rowId) => table.getRow(rowId)?.original)
+          .filter(Boolean); // garantir que não tenha undefined
+        onRowSelectionChange(selectedRows);
+      }
+    },
+
     onColumnVisibilityChange: setVisibleColumns,
     enableColumnResizing: enableResizing,
     columnResizeMode: "onChange",
@@ -175,6 +190,10 @@ export default function CustomTable({
       return updated;
     });
   }, [initiallyHiddenColumns]);
+
+  useEffect(() => {
+    setRowSelection({});
+  }, [data]);
 
   return (
     <div className=" relative">
@@ -436,7 +455,7 @@ export default function CustomTable({
       <div className="flex justify-between items-center mt-7 px-7 flex-wrap">
         <span className="text-sm text-gray-700">Total: {totalItens}</span>
         {totalPaginas > 0 && (
-          <div className="">
+          <div className="flex gap-1 items-center">
             <button
               onClick={() => setPaginaAtual(1)}
               disabled={paginaAtual === 1}

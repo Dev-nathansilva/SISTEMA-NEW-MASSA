@@ -122,13 +122,26 @@ const updateCliente = async (req, res) => {
 };
 
 const deleteCliente = async (req, res) => {
-  const { id } = req.params;
+  const { id: idsParam } = req.params;
+  const ids = idsParam.split(",").map(Number);
 
   try {
-    await prisma.cliente.delete({ where: { id: Number(id) } });
+    if (ids.length > 1) {
+      await prisma.cliente.deleteMany({
+        where: {
+          id: { in: ids },
+        },
+      });
+    } else {
+      await prisma.cliente.delete({
+        where: { id: ids[0] },
+      });
+    }
+
     res.status(204).send();
   } catch (error) {
-    res.status(400).json({ error: "Erro ao deletar cliente." });
+    console.error(error);
+    res.status(400).json({ error: "Erro ao deletar cliente(s)." });
   }
 };
 

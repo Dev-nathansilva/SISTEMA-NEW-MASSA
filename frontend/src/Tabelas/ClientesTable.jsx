@@ -8,7 +8,7 @@ import {
   BsFillCaretDownFill,
 } from "react-icons/bs";
 import { LuListFilter } from "react-icons/lu";
-import { FiMail, FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiMail, FiEdit, FiTrash2, FiRefreshCcw } from "react-icons/fi";
 import usePopupManager from "../hooks/popupmanager";
 import { useCallback } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
@@ -29,6 +29,7 @@ export default function ClientesTable() {
   const [filters, setFilters] = useState(filtrosIniciais);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const debouncedSearchHandler = useCallback(
     debounce((value) => {
@@ -562,9 +563,58 @@ export default function ClientesTable() {
         search={search}
         onSearchChange={setSearch}
         debouncedSearchHandler={debouncedSearchHandler}
+        onRowSelectionChange={(selectedRows) => {
+          setSelectedRows(selectedRows);
+        }}
       />
 
       <Toaster />
+
+      {selectedRows.length > 0 && (
+        <div className="fixed bottom-4 left-[50%] -translate-x-1/2 bg-white shadow-lg border border-gray-300 rounded-lg px-6 py-4 z-50 flex items-center gap-4 animate-fade-in">
+          <span className="text-sm">
+            {selectedRows.length} cliente{selectedRows.length > 1 ? "s" : ""}{" "}
+            selecionado
+            {selectedRows.length > 1 ? "s" : ""}
+          </span>
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 text-sm rounded"
+            onClick={async () => {
+              const confirm = window.confirm(
+                `Tem certeza que deseja deletar ${selectedRows.length} cliente(s)?`
+              );
+              if (!confirm) return;
+
+              try {
+                const ids = selectedRows.map((row) => row.id).join(",");
+                const response = await fetch(
+                  `http://localhost:5000/api/clientes/${ids}`,
+                  {
+                    method: "DELETE",
+                  }
+                );
+
+                if (response.ok) {
+                  toaster.create({
+                    title: "Clientes deletados",
+                    description: "Todos os selecionados foram removidos.",
+                    type: "success",
+                    duration: 3000,
+                  });
+                  fetchData(); // atualiza a lista
+                  setSelectedRows([]); // limpa seleção
+                } else {
+                  throw new Error("Erro ao deletar clientes.");
+                }
+              } catch (error) {
+                toaster.error(error.message);
+              }
+            }}
+          >
+            Deletar
+          </button>
+        </div>
+      )}
     </div>
   );
 }

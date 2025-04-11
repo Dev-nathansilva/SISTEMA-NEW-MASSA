@@ -5,6 +5,7 @@ import { IoPeopleSharp } from "react-icons/io5";
 import { LuPlus } from "react-icons/lu";
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { FiRefreshCcw } from "react-icons/fi";
 
 export default function ClientesPage() {
   const [isExporting, setIsExporting] = useState(false);
@@ -25,6 +26,7 @@ export default function ClientesPage() {
     XLSX.writeFile(workbook, "clientes.xlsx");
     setIsExporting(false);
   };
+  const [tableKey, setTableKey] = useState(0);
 
   return (
     <div>
@@ -34,6 +36,12 @@ export default function ClientesPage() {
           <p className="title-session text-[20px]">
             Gerenciamento dos Clientes
           </p>
+          <button
+            onClick={() => setTableKey((prev) => prev + 1)}
+            className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-500 px-2 py-2 rounded-md font-medium border "
+          >
+            <FiRefreshCcw className=" text-[15px]" />
+          </button>
         </div>
 
         <div className="flex items-center gap-3">
@@ -116,7 +124,9 @@ export default function ClientesPage() {
         </div>
       </div>
 
-      <ClientesTable />
+      <div className="flex justify-end mb-4"></div>
+
+      <ClientesTable key={tableKey} />
     </div>
   );
 }
