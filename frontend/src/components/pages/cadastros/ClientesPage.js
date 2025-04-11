@@ -10,9 +10,11 @@ export default function ClientesPage() {
   const [isExporting, setIsExporting] = useState(false);
 
   const fetchData = async () => {
-    const response = await fetch("http://localhost:5000/api/clientes");
-    const data = await response.json();
-    return data;
+    const response = await fetch(
+      "http://localhost:5000/api/clientes?limit=1000"
+    );
+    const json = await response.json();
+    return json.data;
   };
   const exportToExcel = async () => {
     setIsExporting(true);

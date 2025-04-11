@@ -438,7 +438,7 @@ export default function ClientesTable() {
         accessorKey: "Ações",
         header: "Ações",
         cell: () => (
-          <div className="flex gap-2 text-lg">
+          <div className="flex gap-2 text-[20px]">
             <FiMail className="cursor-pointer text-black" />
             <FiEdit className="cursor-pointer text-orange-500" />
             <FiTrash2 className="cursor-pointer text-red-500" />
