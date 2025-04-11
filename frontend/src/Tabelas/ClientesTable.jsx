@@ -596,8 +596,8 @@ export default function ClientesTable({ fetchDataRef }) {
       },
       // COLUNA CREDITO
       {
-        id: "Crédito",
-        accessorKey: "Crédito",
+        id: "Credito",
+        accessorKey: "Credito",
         enableHiding: true,
         minSize: 200,
       },
@@ -842,6 +842,10 @@ export default function ClientesTable({ fetchDataRef }) {
               </div>
               <div>
                 <strong>Complemento:</strong> {linhaSelecionada.Complemento}
+              </div>
+
+              <div>
+                <strong>Crédito:</strong> R$ {linhaSelecionada.Credito}
               </div>
             </div>
 
