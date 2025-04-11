@@ -297,32 +297,29 @@ export default function CustomTable({
         {extraHeaderContent ? <div>{extraHeaderContent}</div> : <div></div>}
       </div>
 
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-sm text-gray-700">Total: {totalItens}</span>
-        <div className="flex items-center gap-2">
-          <label htmlFor="itensPorPagina" className="text-sm text-gray-700">
-            Itens por página:
-          </label>
-          <select
-            id="itensPorPagina"
-            value={itensPorPagina}
-            onChange={(e) => onChangeItensPorPagina(parseInt(e.target.value))}
-            className="border border-gray-300 rounded px-2 py-1 text-sm"
-          >
-            {[5, 10, 25, 50, 100].map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex items-center justify-end gap-3">
+        <label htmlFor="itensPorPagina" className="text-sm text-gray-700">
+          Itens por página:
+        </label>
+        <select
+          id="itensPorPagina"
+          value={itensPorPagina}
+          onChange={(e) => onChangeItensPorPagina(parseInt(e.target.value))}
+          className="border border-gray-300 rounded px-2 py-1 text-sm"
+        >
+          {[5, 10, 25, 50, 100].map((n) => (
+            <option key={n} value={n}>
+              {n}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Contêiner de tabela com overflow-x-auto */}
       {/* mx-auto min-h-[350px] max-h-[450px] w-full */}
       <div
         ref={scrollRef}
-        className={`scroll-container min-h-[40vh] max-h-[55vh] ${
+        className={`scroll-container min-h-[50vh] max-h-[50vh] ${
           isDragging ? "dragging" : ""
         }`}
         onMouseDown={handleMouseDownScroll}
@@ -436,27 +433,67 @@ export default function CustomTable({
         </DndContext>
       </div>
       {/* Navegação: Paginação */}
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
-          disabled={paginaAtual === 1}
-          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Anterior
-        </button>
-        <span>
-          Página {totalPaginas === 0 ? 0 : paginaAtual} de {totalPaginas}
-        </span>
-        <button
-          onClick={() =>
-            setPaginaAtual((prev) => (prev < totalPaginas ? prev + 1 : prev))
-          }
-          disabled={paginaAtual === totalPaginas}
-          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-        >
-          Próxima
-        </button>
+      <div className="flex justify-between items-center mt-7 px-7 flex-wrap">
+        <span className="text-sm text-gray-700">Total: {totalItens}</span>
+        {totalPaginas > 0 && (
+          <div className="">
+            <button
+              onClick={() => setPaginaAtual(1)}
+              disabled={paginaAtual === 1}
+              className="px-2 py-1 text-sm rounded bg-gray-200 disabled:opacity-50"
+            >
+              <MdKeyboardDoubleArrowLeft />
+            </button>
+            <button
+              onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+              disabled={paginaAtual === 1}
+              className="px-2 py-1 text-sm rounded bg-gray-200 disabled:opacity-50"
+            >
+              <MdKeyboardArrowLeft />
+            </button>
+
+            {Array.from({ length: totalPaginas }, (_, i) => i + 1)
+              .filter((page) => {
+                if (totalPaginas <= 5) return true;
+                if (paginaAtual <= 3) return page <= 5;
+                if (paginaAtual >= totalPaginas - 2)
+                  return page >= totalPaginas - 4;
+                return Math.abs(page - paginaAtual) <= 2;
+              })
+              .map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setPaginaAtual(page)}
+                  className={`px-3 py-1 rounded text-sm ${
+                    page === paginaAtual
+                      ? "bg-black text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+            <button
+              onClick={() =>
+                setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas))
+              }
+              disabled={paginaAtual === totalPaginas}
+              className="px-2 py-1 text-sm rounded bg-gray-200 disabled:opacity-50"
+            >
+              <MdKeyboardArrowRight />
+            </button>
+            <button
+              onClick={() => setPaginaAtual(totalPaginas)}
+              disabled={paginaAtual === totalPaginas}
+              className="px-2 py-1 text-sm rounded bg-gray-200 disabled:opacity-50"
+            >
+              <MdKeyboardDoubleArrowRight />
+            </button>
+          </div>
+        )}
       </div>
+
       {isResizing && <div className="fixed inset-0 cursor-ew-resize z-50" />}
     </div>
   );
