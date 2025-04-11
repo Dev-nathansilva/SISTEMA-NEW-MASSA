@@ -8,7 +8,7 @@ import {
   BsFillCaretDownFill,
 } from "react-icons/bs";
 import { LuListFilter } from "react-icons/lu";
-import { FiMail, FiEdit, FiTrash2, FiRefreshCcw } from "react-icons/fi";
+import { FiMail, FiEdit, FiTrash2, FiRefreshCcw, FiEye } from "react-icons/fi";
 import usePopupManager from "../hooks/popupmanager";
 import { useCallback } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
@@ -456,7 +456,12 @@ export default function ClientesTable({ fetchDataRef }) {
         accessorKey: "Ações",
         header: "Ações",
         cell: ({ row }) => (
-          <div className="flex gap-2 text-[20px]">
+          <div className="flex gap-2 text-[19px]">
+            <FiEye
+              className="cursor-pointer text-black"
+              title="Visualizar"
+              onClick={() => abrirPopupComDados(row.original)}
+            />
             <FiMail className="cursor-pointer text-black" />
             <FiEdit className="cursor-pointer text-orange-500" />
             <FiTrash2
@@ -588,7 +593,6 @@ export default function ClientesTable({ fetchDataRef }) {
         onRowSelectionChange={(selectedRows) => {
           setSelectedRows(selectedRows);
         }}
-        onRowClick={abrirPopupComDados}
       />
 
       <Toaster />
