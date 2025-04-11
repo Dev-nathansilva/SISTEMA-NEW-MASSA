@@ -68,7 +68,7 @@ export default function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{ user }}>
       {error && (
-        <DialogRoot open={error} role="alertdialog">
+        <DialogRoot open={error} role="alertdialog" className="z-[1300]">
           <DialogBackdrop className="z-[1200]" />
           <DialogContent className="dialog-content">
             <DialogHeader>
