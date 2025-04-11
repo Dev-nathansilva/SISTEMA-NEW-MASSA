@@ -42,12 +42,19 @@ export default function ClientesTable() {
       {
         key: "status",
         label: "Status",
-        options: ["Ativo", "Inativo"],
+        options: [
+          { value: "Ativo", label: "Ativo" },
+          { value: "Inativo", label: "Inativo" },
+        ],
       },
       {
-        key: "Tipo",
+        key: "tipo",
         label: "Tipo",
-        options: ["Pessoa Física", "Pessoa Jurídica", "Empresa"],
+        options: [
+          { value: "PessoaFisica", label: "Pessoa Física" },
+          { value: "PessoaJuridica", label: "Pessoa Jurídica" },
+          { value: "Empresa", label: "Empresa" },
+        ],
       },
     ],
     []
@@ -124,8 +131,23 @@ export default function ClientesTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const params = new URLSearchParams({
+          page: paginaAtual,
+          limit: itensPorPagina,
+          search: debouncedSearch,
+        });
+
+        // Adicionando os filtros
+        if (filters.status.length > 0) {
+          filters.status.forEach((status) => params.append("status", status));
+        }
+
+        if (filters.tipo.length > 0) {
+          filters.tipo.forEach((tipo) => params.append("tipo", tipo));
+        }
+
         const response = await fetch(
-          `http://localhost:5000/api/clientes?page=${paginaAtual}&limit=${itensPorPagina}&search=${debouncedSearch}`
+          `http://localhost:5000/api/clientes?${params.toString()}`
         );
         const data = await response.json();
 
@@ -133,7 +155,7 @@ export default function ClientesTable() {
           id: cliente.id,
           Nome: cliente.nome,
           "CPF/CNPJ": cliente.documento,
-          Tipo:
+          tipo:
             {
               PessoaFisica: "Pessoa Física",
               PessoaJuridica: "Pessoa Jurídica",
@@ -149,14 +171,14 @@ export default function ClientesTable() {
 
         setClientes(mappedData);
         setTotalPaginas(data.totalPages);
-        setTotalItens(data.total); // novo valor retornado pelo backend
+        setTotalItens(data.total);
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       }
     };
 
     fetchData();
-  }, [debouncedSearch, paginaAtual, itensPorPagina]); // ⬅
+  }, [debouncedSearch, paginaAtual, itensPorPagina, filters]);
 
   const renderFilterHeader = useCallback(
     (key) => {
@@ -187,13 +209,13 @@ export default function ClientesTable() {
               </h2>
               <div className="flex flex-col gap-2 text-sm">
                 {config.options.map((option) => (
-                  <label key={option} className="flex items-center gap-2">
+                  <label key={option.value} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selected.includes(option)}
-                      onChange={() => toggleFilterValue(key, option)}
+                      checked={selected.includes(option.value)}
+                      onChange={() => toggleFilterValue(key, option.value)}
                     />
-                    {option}
+                    {option.label}
                   </label>
                 ))}
               </div>
@@ -291,7 +313,7 @@ export default function ClientesTable() {
   const [columnOrder, setColumnOrder] = useState([
     "Selecionar",
     "Nome",
-    "Tipo",
+    "tipo",
     "CPF/CNPJ",
     "status",
     "Email",
@@ -372,9 +394,9 @@ export default function ClientesTable() {
       },
       // COLUNA TIPO
       {
-        id: "Tipo",
-        accessorKey: "Tipo",
-        header: () => renderFilterHeader("Tipo"),
+        id: "tipo",
+        accessorKey: "tipo",
+        header: () => renderFilterHeader("tipo"),
         enableSorting: true,
         enableResizing: true,
         minSize: 200,
@@ -434,7 +456,6 @@ export default function ClientesTable() {
       // COLUNA DATA DE CADASTRO
       {
         id: "Data de Cadastro",
-        header: renderDateRangeFilterHeader,
         accessorKey: "Data de Cadastro",
         enableHiding: true,
         minSize: 300,
@@ -451,28 +472,6 @@ export default function ClientesTable() {
     renderFilterHeader,
     renderDateRangeFilterHeader,
   ]);
-
-  const filteredClientes = useMemo(() => {
-    return clientes.filter((cliente) => {
-      const matchesFilter = filterConfig.every(({ key }) => {
-        const selectedValues = filters[key];
-        return (
-          !selectedValues ||
-          selectedValues.length === 0 ||
-          selectedValues.includes(cliente[key])
-        );
-      });
-
-      const cadastroDate = cliente.dataCadastroRaw?.slice(0, 10); // 'YYYY-MM-DD'
-
-      const afterStart =
-        !filters.dataInicial || cadastroDate >= filters.dataInicial;
-
-      const beforeEnd = !filters.dataFinal || cadastroDate <= filters.dataFinal;
-
-      return matchesFilter && afterStart && beforeEnd;
-    });
-  }, [clientes, filters, filterConfig]);
 
   function BotaoLimparFiltros({ onClick }) {
     return (
@@ -497,7 +496,7 @@ export default function ClientesTable() {
   return (
     <div>
       <CustomTable
-        data={filteredClientes}
+        data={clientes}
         columns={columns}
         setColumnOrder={setColumnOrder}
         enableResizing={enableResizing}

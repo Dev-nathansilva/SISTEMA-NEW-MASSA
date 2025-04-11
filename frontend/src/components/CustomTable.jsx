@@ -342,11 +342,11 @@ export default function CustomTable({
                       <th
                         key={header.id}
                         className={`bg-[#fcfcfc] ${
-                          enableDragging ? "" : "p-4"
+                          enableDragging
+                            ? ""
+                            : "p-4 border-y border-[#eff0f1] first:border first:border-r-transparent first:border-l-[#eff0f1] last:border last:border-l-transparent last:border-r-[#eff0f1]"
                         } text-left font-semibold relative first:rounded-l-[10px] 
-                        last:rounded-r-[10px] border-y border-[#eff0f1] first:border 
-                        first:border-r-transparent first:border-l-[#eff0f1] 
-                        last:border last:border-l-transparent last:border-r-[#eff0f1]  text-[#1f383c] `}
+                        last:rounded-r-[10px]   text-[#1f383c] `}
                         style={{
                           minWidth: header.getSize(),
                           width: header.getSize(),

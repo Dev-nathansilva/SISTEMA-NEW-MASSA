@@ -2,35 +2,54 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getAllClientes = async (req, res) => {
-  const { page = 1, limit = 10, search = "" } = req.query;
+  const { page = 1, limit = 10, search = "", tipo, status } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
   const take = Number(limit);
   const searchTerm = search.toLowerCase();
 
+  // Normaliza `tipo` e `status` para arrays
+  const tipos = tipo
+    ? Array.isArray(tipo)
+      ? tipo
+      : tipo
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t)
+    : [];
+
+  const statusList = status
+    ? Array.isArray(status)
+      ? status
+      : status
+          .split(",")
+          .map((s) => s.trim())
+          .filter((s) => s)
+    : [];
+
+  const where = {
+    AND: [
+      {
+        OR: [
+          { nome: { contains: searchTerm } },
+          { email: { contains: searchTerm } },
+          { documento: { contains: searchTerm } },
+        ],
+      },
+      ...(tipos.length > 0 ? [{ tipo: { in: tipos } }] : []),
+      ...(statusList.length > 0 ? [{ status: { in: statusList } }] : []),
+    ],
+  };
+
   try {
     const [clientes, total] = await Promise.all([
       prisma.cliente.findMany({
-        where: {
-          OR: [
-            { nome: { contains: searchTerm } },
-            { email: { contains: searchTerm } },
-            { documento: { contains: searchTerm } },
-          ],
-        },
+        where,
         skip,
         take,
         orderBy: { id: "desc" },
       }),
-      prisma.cliente.count({
-        where: {
-          OR: [
-            { nome: { contains: searchTerm } },
-            { email: { contains: searchTerm } },
-            { documento: { contains: searchTerm } },
-          ],
-        },
-      }),
+      prisma.cliente.count({ where }),
     ]);
 
     res.json({
