@@ -277,7 +277,7 @@ export default function CustomTable({
                   {popupStates.columns && (
                     <div
                       ref={popupRefs.columns}
-                      className="absolute z-[1000] mr-[-33px] right-0 top-0 w-64 bg-white border border-gray-300 shadow-lg rounded-md p-4"
+                      className="absolute z-[1000] mr-[-33px] right-0 top-0 w-64 bg-white border border-gray-300 shadow-lg rounded-md p-4 overflow-y-auto max-h-[200px]"
                     >
                       {/* Checkbox para selecionar/desmarcar todas as colunas */}
                       <label className="block font-medium mb-2">

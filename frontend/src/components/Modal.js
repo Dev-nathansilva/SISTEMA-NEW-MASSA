@@ -1,18 +1,21 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { IoMdPersonAdd } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 
+const dadosClientes = {
+  id: "",
+  nome: "",
+  email: "",
+  tipo: "",
+  documento: "",
+  telefone: "",
+  inscricaoEstadual: "",
+  status: true,
+};
+
 export default function ClienteModal({ isOpen, onClose, onClienteCriado }) {
-  const [cliente, setCliente] = useState({
-    id: "",
-    nome: "",
-    email: "",
-    tipo: "",
-    documento: "",
-    telefone: "",
-    inscricaoEstadual: "",
-    status: true,
-  });
+  const [cliente, setCliente] = useState(dadosClientes);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -57,6 +60,27 @@ export default function ClienteModal({ isOpen, onClose, onClienteCriado }) {
     }
   };
 
+  const handleFechar = () => {
+    const temDados = Object.values(cliente).some(
+      (v) => v !== "" && v !== true && v !== false
+    );
+
+    if (temDados) {
+      const confirmar = window.confirm(
+        "Você tem certeza que deseja sair? Os dados preenchidos serão perdidos."
+      );
+      if (!confirmar) return;
+    }
+
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setCliente(dadosClientes);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -68,7 +92,7 @@ export default function ClienteModal({ isOpen, onClose, onClienteCriado }) {
             <IoMdPersonAdd className="text-2xl text-blue-500" />
             <span>Cadastro de Clientes</span>
           </div>
-          <button onClick={onClose}>
+          <button onClick={handleFechar}>
             <IoClose className="text-2xl text-gray-600 hover:text-red-500" />
           </button>
         </div>
@@ -193,7 +217,7 @@ export default function ClienteModal({ isOpen, onClose, onClienteCriado }) {
           <div className="mt-6 flex justify-end gap-3">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleFechar}
               className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
             >
               Cancelar

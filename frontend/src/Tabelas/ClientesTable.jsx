@@ -81,6 +81,12 @@ export default function ClientesTable({ fetchDataRef }) {
     "Email",
     "Inscricao Estadual",
     "Data de Cadastro",
+    "Endereco",
+    "Complemento",
+    "Bairro",
+    "CEP",
+    "Credito",
+    "Cidade",
   ]);
 
   //PAGINAÇÃO
@@ -96,20 +102,64 @@ export default function ClientesTable({ fetchDataRef }) {
       let newHiddenColumns = [];
 
       if (width <= 1140) {
-        newHiddenColumns = ["Email", "Inscricao Estadual", "Data de Cadastro"];
+        newHiddenColumns = [
+          "Email",
+          "Inscricao Estadual",
+          "Data de Cadastro",
+          "Endereco",
+          "Complemento",
+          "Bairro",
+          "CEP",
+          "Credito",
+          "Cidade",
+        ];
       } else if (width <= 1339) {
         newHiddenColumns = [
           "Email",
           "Inscricao Estadual",
           "Data de Cadastro",
           "CPF/CNPJ",
+          "Endereco",
+          "Complemento",
+          "Bairro",
+          "CEP",
+          "Credito",
+          "Cidade",
         ];
       } else if (width <= 1639) {
-        newHiddenColumns = ["Email", "Inscricao Estadual", "Data de Cadastro"];
+        newHiddenColumns = [
+          "Email",
+          "Inscricao Estadual",
+          "Data de Cadastro",
+          "Endereco",
+          "Complemento",
+          "Bairro",
+          "CEP",
+          "Credito",
+          "Cidade",
+        ];
       } else if (width <= 1920) {
-        newHiddenColumns = ["Inscricao Estadual", "Data de Cadastro"];
+        newHiddenColumns = [
+          "Inscricao Estadual",
+          "Data de Cadastro",
+          "Endereco",
+          "Complemento",
+          "Bairro",
+          "CEP",
+          "Credito",
+          "Cidade",
+        ];
       } else {
-        newHiddenColumns = [];
+        newHiddenColumns = [
+          "Inscricao Estadual",
+          "Data de Cadastro",
+          "Endereco",
+          "Complemento",
+          "Bairro",
+          "CEP",
+          "Credito",
+          "Cidade",
+        ];
       }
 
       setHiddenColumns(newHiddenColumns);
@@ -178,7 +228,7 @@ export default function ClientesTable({ fetchDataRef }) {
         `http://localhost:5000/api/clientes?${params.toString()}`
       );
       const data = await response.json();
-
+      console.log(data);
       const mappedData = data.data.map((cliente) => ({
         id: cliente.id,
         Nome: cliente.nome,
@@ -190,11 +240,16 @@ export default function ClientesTable({ fetchDataRef }) {
             Empresa: "Empresa",
           }[cliente.tipo] || cliente.tipo,
         status: cliente.status,
-        teste: "",
         Email: cliente.email,
         "Inscricao Estadual": cliente.inscricaoEstadual,
         "Data de Cadastro": formatarData(cliente.dataCadastro),
         dataCadastroRaw: cliente.dataCadastro,
+        Endereço: cliente.endereco,
+        Complemento: cliente.complemento,
+        Bairro: cliente.bairro,
+        CEP: cliente.cep,
+        Cidade: cliente.cidade,
+        Credito: cliente.credito,
       }));
 
       setClientes(mappedData);
@@ -347,6 +402,12 @@ export default function ClientesTable({ fetchDataRef }) {
     "Email",
     "Inscricao Estadual",
     "Data de Cadastro",
+    "Endereco",
+    "Complemento",
+    "Bairro",
+    "Cidade",
+    "CEP",
+    "Credito",
     "status",
     "ações",
   ]);
@@ -497,6 +558,48 @@ export default function ClientesTable({ fetchDataRef }) {
         accessorKey: "Data de Cadastro",
         enableHiding: true,
         minSize: 300,
+      },
+      // COLUNA ENDEREÇO
+      {
+        id: "Endereco",
+        accessorKey: "Endereço",
+        enableHiding: true,
+        minSize: 300,
+      },
+      // COLUNA COMPLEMENTO
+      {
+        id: "Complemento",
+        accessorKey: "Complemento",
+        enableHiding: true,
+        minSize: 300,
+      },
+      // COLUNA CIDADE
+      {
+        id: "Cidade",
+        accessorKey: "Cidade",
+        enableHiding: true,
+        minSize: 300,
+      },
+      // COLUNA BAIRRO
+      {
+        id: "Bairro",
+        accessorKey: "Bairro",
+        enableHiding: true,
+        minSize: 300,
+      },
+      // COLUNA CEP
+      {
+        id: "CEP",
+        accessorKey: "CEP",
+        enableHiding: true,
+        minSize: 300,
+      },
+      // COLUNA CREDITO
+      {
+        id: "Crédito",
+        accessorKey: "Crédito",
+        enableHiding: true,
+        minSize: 200,
       },
     ];
 
@@ -649,7 +752,7 @@ export default function ClientesTable({ fetchDataRef }) {
           onClick={() => setMostrarPopup(false)}
         >
           <div
-            className="bg-white w-full max-w-[300px] h-screen p-6 shadow-2xl relative overflow-y-auto"
+            className="bg-white w-full max-w-[300px] h-screen shadow-2xl flex flex-col relative"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Botão Fechar */}
@@ -660,38 +763,36 @@ export default function ClientesTable({ fetchDataRef }) {
               <IoClose size={24} />
             </button>
 
-            {/* Título */}
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-2">
-              Detalhes do Cliente
-            </h2>
+            {/* Cabeçalho */}
+            <div className="px-6 pt-6 pb-4 border-b">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Detalhes do Cliente
+              </h2>
+            </div>
 
-            {/* Lista de dados */}
-            <div className="space-y-4 text-sm text-gray-700 pb-32">
+            {/* Conteúdo scrollável */}
+            <div className="flex-grow overflow-y-auto pb-[100px] px-6 py-4 space-y-4 text-sm text-gray-700">
               <div className="flex items-center gap-2">
                 <FaIdCard className="text-gray-500" />
                 <span>
                   <strong>ID:</strong> {linhaSelecionada.id}
                 </span>
               </div>
-
               <div className="flex items-center gap-2">
                 <FaUser className="text-gray-500" />
                 <span>
                   <strong>Nome:</strong> {linhaSelecionada.Nome}
                 </span>
               </div>
-
               <div className="flex items-center gap-2">
                 <FaAddressCard className="text-gray-500" />
                 <span>
                   <strong>CPF/CNPJ:</strong> {linhaSelecionada["CPF/CNPJ"]}
                 </span>
               </div>
-
               <div>
                 <strong>Tipo:</strong> {linhaSelecionada.tipo}
               </div>
-
               <div>
                 <strong>Status:</strong>{" "}
                 <span
@@ -704,7 +805,6 @@ export default function ClientesTable({ fetchDataRef }) {
                   {linhaSelecionada.status}
                 </span>
               </div>
-
               {linhaSelecionada.Email && (
                 <div className="flex items-center gap-2">
                   <FaEnvelope className="text-gray-500" />
@@ -713,14 +813,12 @@ export default function ClientesTable({ fetchDataRef }) {
                   </span>
                 </div>
               )}
-
               {linhaSelecionada["Inscricao Estadual"] && (
                 <div>
                   <strong>Inscrição Estadual:</strong>{" "}
                   {linhaSelecionada["Inscricao Estadual"]}
                 </div>
               )}
-
               {linhaSelecionada["Data de Cadastro"] && (
                 <div className="flex items-center gap-2">
                   <FaCalendarAlt className="text-gray-500" />
@@ -730,11 +828,26 @@ export default function ClientesTable({ fetchDataRef }) {
                   </span>
                 </div>
               )}
+              <div>
+                <strong>Endereço:</strong> {linhaSelecionada.Endereço}
+              </div>
+              <div>
+                <strong>Cidade:</strong> {linhaSelecionada.Cidade}
+              </div>
+              <div>
+                <strong>CEP:</strong> {linhaSelecionada.CEP}
+              </div>
+              <div>
+                <strong>Bairro:</strong> {linhaSelecionada.Bairro}
+              </div>
+              <div>
+                <strong>Complemento:</strong> {linhaSelecionada.Complemento}
+              </div>
             </div>
 
-            {/* Botões no fundo */}
-            <div className="absolute bottom-6 left-0 w-full px-6 flex flex-col gap-3">
-              <button className=" flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
+            {/* Rodapé fixo */}
+            <div className="w-full px-6 py-4 border-t flex flex-col gap-3 bg-white">
+              <button className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
                 <FaEdit className="text-[20px]" />
                 Editar Informações
               </button>

@@ -44,7 +44,14 @@ model Cliente {
   documento          String   // CPF ou CNPJ
   email              String
   telefone           String
-  inscricaoEstadual  String
+  inscricaoEstadual  String?
   dataCadastro       DateTime @default(now())
   status             Status  @default(Ativo)
+  endereco           String   @default("Não informado")
+  complemento        String?    
+  cidade             String   @default("Não informado")
+  bairro             String   @default("Não informado")
+  cep                String   @default("00000-000")
+  credito            Float      @default(0.0)
+
 }
