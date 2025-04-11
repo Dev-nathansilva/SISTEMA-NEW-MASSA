@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import CustomTable from "../components/CustomTable";
 import debounce from "lodash.debounce";
-
+import { Toaster, toaster } from "@/components/ui/toaster";
 import {
   BsChevronExpand,
   BsFillCaretUpFill,
@@ -437,11 +437,14 @@ export default function ClientesTable() {
         id: "ações",
         accessorKey: "Ações",
         header: "Ações",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex gap-2 text-[20px]">
             <FiMail className="cursor-pointer text-black" />
             <FiEdit className="cursor-pointer text-orange-500" />
-            <FiTrash2 className="cursor-pointer text-red-500" />
+            <FiTrash2
+              className="cursor-pointer text-red-500"
+              onClick={() => handleDelete(row.original.id)}
+            />
           </div>
         ),
         enableResizing,
@@ -505,6 +508,33 @@ export default function ClientesTable() {
     return algumFiltroSelecionado;
   }, [filters]);
 
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Tem certeza que deseja excluir este cliente?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/clientes/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        toaster.create({
+          title: "Cliente excluído",
+          description: "O cliente foi removido com sucesso.",
+          type: "success",
+          duration: 3000,
+        });
+        setClientes((prev) => prev.filter((c) => c.id !== id));
+      } else {
+        throw new Error("Erro ao excluir o cliente.");
+      }
+    } catch (error) {
+      toaster.error(error.message || "Erro inesperado ao excluir cliente.");
+    }
+  };
+
   return (
     <div>
       <CustomTable
@@ -532,6 +562,8 @@ export default function ClientesTable() {
         onSearchChange={setSearch}
         debouncedSearchHandler={debouncedSearchHandler}
       />
+
+      <Toaster />
     </div>
   );
 }
