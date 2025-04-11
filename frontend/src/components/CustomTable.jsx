@@ -193,7 +193,8 @@ export default function CustomTable({
 
   useEffect(() => {
     setRowSelection({});
-  }, [data]);
+    onRowSelectionChange({});
+  }, [itensPorPagina, paginaAtual]);
 
   return (
     <div className=" relative">
