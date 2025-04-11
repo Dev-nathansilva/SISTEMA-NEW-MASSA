@@ -43,6 +43,7 @@ export default function CustomTable({
   onSearchChange,
   debouncedSearchHandler,
   onRowSelectionChange,
+  onRowClick,
 }) {
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters] = useState([]);
@@ -419,6 +420,7 @@ export default function CustomTable({
                   table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
+                      onClick={() => onRowClick?.(row.original)}
                       className={` rounded-[10px] shadow-xs  ${
                         row.getIsSelected()
                           ? "bg-blue-100"

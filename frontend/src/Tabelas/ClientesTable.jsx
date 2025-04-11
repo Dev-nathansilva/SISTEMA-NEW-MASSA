@@ -14,6 +14,15 @@ import { useCallback } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import "../../src/styles/Pages.css";
+import {
+  FaUser,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaIdCard,
+  FaAddressCard,
+  FaEdit,
+  FaWhatsapp,
+} from "react-icons/fa";
 
 const filtrosIniciais = {
   status: [],
@@ -30,6 +39,13 @@ export default function ClientesTable({ fetchDataRef }) {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
+  const [linhaSelecionada, setLinhaSelecionada] = useState(null);
+  const [mostrarPopup, setMostrarPopup] = useState(false);
+
+  const abrirPopupComDados = (linha) => {
+    setLinhaSelecionada(linha);
+    setMostrarPopup(true);
+  };
 
   const debouncedSearchHandler = useCallback(
     debounce((value) => {
@@ -572,6 +588,7 @@ export default function ClientesTable({ fetchDataRef }) {
         onRowSelectionChange={(selectedRows) => {
           setSelectedRows(selectedRows);
         }}
+        onRowClick={abrirPopupComDados}
       />
 
       <Toaster />
@@ -619,6 +636,110 @@ export default function ClientesTable({ fetchDataRef }) {
           >
             Deletar
           </button>
+        </div>
+      )}
+
+      {mostrarPopup && linhaSelecionada && (
+        <div
+          className="fixed inset-0 z-[1000] flex justify-end"
+          onClick={() => setMostrarPopup(false)}
+        >
+          <div
+            className="bg-white w-full max-w-[300px] h-screen p-6 shadow-2xl relative overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Botão Fechar */}
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition"
+              onClick={() => setMostrarPopup(false)}
+            >
+              <IoClose size={24} />
+            </button>
+
+            {/* Título */}
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-2">
+              Detalhes do Cliente
+            </h2>
+
+            {/* Lista de dados */}
+            <div className="space-y-4 text-sm text-gray-700 pb-32">
+              <div className="flex items-center gap-2">
+                <FaIdCard className="text-gray-500" />
+                <span>
+                  <strong>ID:</strong> {linhaSelecionada.id}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <FaUser className="text-gray-500" />
+                <span>
+                  <strong>Nome:</strong> {linhaSelecionada.Nome}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <FaAddressCard className="text-gray-500" />
+                <span>
+                  <strong>CPF/CNPJ:</strong> {linhaSelecionada["CPF/CNPJ"]}
+                </span>
+              </div>
+
+              <div>
+                <strong>Tipo:</strong> {linhaSelecionada.tipo}
+              </div>
+
+              <div>
+                <strong>Status:</strong>{" "}
+                <span
+                  className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+                    linhaSelecionada.status === "Ativo"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {linhaSelecionada.status}
+                </span>
+              </div>
+
+              {linhaSelecionada.Email && (
+                <div className="flex items-center gap-2">
+                  <FaEnvelope className="text-gray-500" />
+                  <span>
+                    <strong>Email:</strong> {linhaSelecionada.Email}
+                  </span>
+                </div>
+              )}
+
+              {linhaSelecionada["Inscricao Estadual"] && (
+                <div>
+                  <strong>Inscrição Estadual:</strong>{" "}
+                  {linhaSelecionada["Inscricao Estadual"]}
+                </div>
+              )}
+
+              {linhaSelecionada["Data de Cadastro"] && (
+                <div className="flex items-center gap-2">
+                  <FaCalendarAlt className="text-gray-500" />
+                  <span>
+                    <strong>Data de Cadastro:</strong>{" "}
+                    {linhaSelecionada["Data de Cadastro"]}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Botões no fundo */}
+            <div className="absolute bottom-6 left-0 w-full px-6 flex flex-col gap-3">
+              <button className=" flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
+                <FaEdit className="text-[20px]" />
+                Editar Informações
+              </button>
+              <button className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition">
+                <FaWhatsapp className="text-[20px]" />
+                Enviar Mensagem
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
