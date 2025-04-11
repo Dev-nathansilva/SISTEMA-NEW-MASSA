@@ -145,6 +145,17 @@ export default function ClientesTable() {
         if (filters.tipo.length > 0) {
           filters.tipo.forEach((tipo) => params.append("tipo", tipo));
         }
+        if (filters.dataInicial) {
+          const dataInicialUTC = new Date(filters.dataInicial);
+          dataInicialUTC.setUTCHours(0, 0, 0, 0);
+          params.append("dataInicial", dataInicialUTC.toISOString());
+        }
+
+        if (filters.dataFinal) {
+          const dataFinalUTC = new Date(filters.dataFinal);
+          dataFinalUTC.setUTCHours(23, 59, 59, 999); // Inclui o dia inteiro
+          params.append("dataFinal", dataFinalUTC.toISOString());
+        }
 
         const response = await fetch(
           `http://localhost:5000/api/clientes?${params.toString()}`
@@ -259,7 +270,7 @@ export default function ClientesTable() {
                 Data Inicial:
                 <input
                   type="date"
-                  className="w-full border px-2 py-1 rounded mt-1"
+                  className=" border px-2 py-1 rounded mt-1"
                   value={filters.dataInicial || ""}
                   onChange={(e) =>
                     setFilters((prev) => ({
@@ -273,7 +284,7 @@ export default function ClientesTable() {
                 Data Final:
                 <input
                   type="date"
-                  className="w-full border px-2 py-1 rounded mt-1"
+                  className=" border px-2 py-1 rounded mt-1"
                   value={filters.dataFinal || ""}
                   onChange={(e) =>
                     setFilters((prev) => ({
@@ -315,10 +326,10 @@ export default function ClientesTable() {
     "Nome",
     "tipo",
     "CPF/CNPJ",
-    "status",
     "Email",
     "Inscricao Estadual",
     "Data de Cadastro",
+    "status",
     "ações",
   ]);
 
@@ -456,6 +467,7 @@ export default function ClientesTable() {
       // COLUNA DATA DE CADASTRO
       {
         id: "Data de Cadastro",
+        header: renderDateRangeFilterHeader,
         accessorKey: "Data de Cadastro",
         enableHiding: true,
         minSize: 300,

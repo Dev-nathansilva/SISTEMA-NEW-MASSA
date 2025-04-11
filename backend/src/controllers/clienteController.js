@@ -2,13 +2,20 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getAllClientes = async (req, res) => {
-  const { page = 1, limit = 10, search = "", tipo, status } = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    search = "",
+    tipo,
+    status,
+    dataInicial,
+    dataFinal,
+  } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
   const take = Number(limit);
   const searchTerm = search.toLowerCase();
 
-  // Normaliza `tipo` e `status` para arrays
   const tipos = tipo
     ? Array.isArray(tipo)
       ? tipo
@@ -27,6 +34,24 @@ const getAllClientes = async (req, res) => {
           .filter((s) => s)
     : [];
 
+  const dataFiltro = [];
+
+  if (dataInicial) {
+    dataFiltro.push({
+      dataCadastro: { gte: new Date(dataInicial) },
+    });
+  }
+
+  if (dataFinal) {
+    // Considera o fim do dia
+    const dataFinalCompleta = new Date(dataFinal);
+    dataFinalCompleta.setHours(23, 59, 59, 999);
+
+    dataFiltro.push({
+      dataCadastro: { lte: dataFinalCompleta },
+    });
+  }
+
   const where = {
     AND: [
       {
@@ -40,6 +65,7 @@ const getAllClientes = async (req, res) => {
       },
       ...(tipos.length > 0 ? [{ tipo: { in: tipos } }] : []),
       ...(statusList.length > 0 ? [{ status: { in: statusList } }] : []),
+      ...dataFiltro,
     ],
   };
 
