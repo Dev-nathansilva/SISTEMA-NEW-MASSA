@@ -70,7 +70,7 @@ export default function ClientesTable() {
 
   const [totalItens, setTotalItens] = useState(0);
   const [paginaAtual, setPaginaAtual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
   const [itensPorPagina, setItensPorPagina] = useState(10);
 
   useEffect(() => {

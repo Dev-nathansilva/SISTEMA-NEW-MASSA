@@ -54,11 +54,14 @@ const getAllClientes = async (req, res) => {
       prisma.cliente.count({ where }),
     ]);
 
+    const totalPages = Math.ceil(total / limit);
+    const currentPage = totalPages > 0 ? Math.min(Number(page), totalPages) : 0;
+
     res.json({
       data: clientes,
       total,
-      page: Number(page),
-      totalPages: Math.ceil(total / limit),
+      page: currentPage,
+      totalPages,
     });
   } catch (error) {
     console.error(error);

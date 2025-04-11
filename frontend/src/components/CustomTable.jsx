@@ -445,7 +445,7 @@ export default function CustomTable({
           Anterior
         </button>
         <span>
-          Página {paginaAtual} de {totalPaginas}
+          Página {totalPaginas === 0 ? 0 : paginaAtual} de {totalPaginas}
         </span>
         <button
           onClick={() =>
