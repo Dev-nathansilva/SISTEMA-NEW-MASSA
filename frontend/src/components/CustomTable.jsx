@@ -12,6 +12,8 @@ import { FiAlertOctagon, FiSearch } from "react-icons/fi";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { FaTableList } from "react-icons/fa6";
+
 import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
@@ -24,6 +26,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import usePopupManager from "../hooks/popupmanager";
 import { LuSettings2 } from "react-icons/lu";
 import { Input, InputGroup } from "@chakra-ui/react";
+import { TbListDetails } from "react-icons/tb";
 
 export default function CustomTable({
   data,
@@ -454,7 +457,10 @@ export default function CustomTable({
       </div>
       {/* Navegação: Paginação */}
       <div className="flex justify-between items-center mt-7 px-7 flex-wrap">
-        <span className="text-sm text-gray-700">Total: {totalItens}</span>
+        <span className=" flex gap-3 items-center p-3 rounded-lg bg-gray-200 text-sm text-gray-700 font-bold">
+          <FaTableList />
+          Total: {totalItens}
+        </span>
         {totalPaginas > 0 && (
           <div className="flex gap-1 items-center">
             <button
