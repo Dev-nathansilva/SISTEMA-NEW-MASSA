@@ -34,6 +34,8 @@ const getAllClientes = async (req, res) => {
           { nome: { contains: searchTerm } },
           { email: { contains: searchTerm } },
           { documento: { contains: searchTerm } },
+          { telefone: { contains: searchTerm } },
+          { inscricaoEstadual: { contains: searchTerm } },
         ],
       },
       ...(tipos.length > 0 ? [{ tipo: { in: tipos } }] : []),
