@@ -429,24 +429,36 @@ export default function CustomTable({
                           : "bg-white hover:bg-gray-100"
                       }`}
                     >
-                      {row.getVisibleCells().map((cell, index, array) => (
-                        <td
-                          key={cell.id}
-                          title={String(cell.getValue() ?? "")}
-                          className={`max-w-[20px] truncate p-5 text-left  border-y border-[#e0e0e0] first:border 
-                        first:border-r-transparent first:border-l-[#e0e0e0] 
-                        last:border last:border-l-transparent last:border-r-[#e0e0e0] ${
-                          index === 0 ? "rounded-l-[10px]" : ""
-                        } ${
-                            index === array.length - 1 ? "rounded-r-[10px]" : ""
-                          }`}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
+                      {row.getVisibleCells().map((cell, index, array) => {
+                        const isSingleCell = array.length === 1;
+                        const isFirst = index === 0;
+                        const isLast = index === array.length - 1;
+
+                        return (
+                          <td
+                            key={cell.id}
+                            title={String(cell.getValue() ?? "")}
+                            className={`max-w-[20px] truncate p-5 text-left border-y border-y-[#e0e0e0]
+                            ${
+                              isSingleCell
+                                ? "border border-r-[#e0e0e0] border-l-[#e0e0e0]"
+                                : isFirst
+                                ? "first:border first:border-r-transparent first:border-l-[#e0e0e0]"
+                                : isLast
+                                ? "last:border last:border-l-transparent last:border-r-[#e0e0e0]"
+                                : ""
+                            }
+                            ${isFirst ? "rounded-l-[10px]" : ""}
+                            ${isLast ? "rounded-r-[10px]" : ""}
+                          `}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))
                 )}

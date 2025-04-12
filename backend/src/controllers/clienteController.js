@@ -60,6 +60,7 @@ const getAllClientes = async (req, res) => {
           { email: { contains: searchTerm } },
           { documento: { contains: searchTerm } },
           { telefone: { contains: searchTerm } },
+          { cidade: { contains: searchTerm } },
           { inscricaoEstadual: { contains: searchTerm } },
         ],
       },
@@ -99,8 +100,11 @@ const createCliente = async (req, res) => {
   const data = req.body;
 
   try {
-    const cliente = await prisma.cliente.create({ data });
-    res.status(201).json({ message: "Cliente criado com sucesso!", cliente });
+    const result = await prisma.cliente.createMany({ data });
+    res.status(201).json({
+      message: "Clientes criados com sucesso!",
+      count: result.count,
+    });
   } catch (error) {
     res.status(400).json({ error: "Erro ao criar cliente." });
   }
