@@ -16,9 +16,9 @@ enum Nivel {
 model User {
   id       String      @id @default(cuid())
   name     String
-  email    String   @unique
+  email    String      @unique
   password String
-  nivel    Nivel    @default(padrao)
+  nivel    Nivel       @default(padrao)
   passwordResetToken   String?
   passwordResetExpires DateTime?
   
@@ -46,12 +46,87 @@ model Cliente {
   telefone           String
   inscricaoEstadual  String?
   dataCadastro       DateTime @default(now())
-  status             Status  @default(Ativo)
+  status             Status   @default(Ativo)
   endereco           String   @default("Não informado")
   complemento        String?    
   cidade             String   @default("Não informado")
   bairro             String   @default("Não informado")
   cep                String   @default("00000-000")
-  credito            Float      @default(0.0)
+  credito            Float     @default(0.0)
 
 }
+
+
+model Fornecedor {
+  id                    Int     @id @default(autoincrement())
+  nome                  String
+  documento             String
+  cidade                String
+  status                Status  @default(Ativo)
+  email                 String
+  telefone              String
+  inscricaoEstadual     String?
+  endereco              String
+  complemento           String?
+  bairro                String
+  cep                   String
+  referenciaBancaria    String?
+  chavePix              String?
+  nomeTitular           String
+  limiteCredito         Float
+  condicoesPagamento    String
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+
+model Vendedor {
+  id             Int   @id @default(autoincrement())
+  nome           String
+  email          String
+  telefone       String
+  comissao       Float   
+  status          Status  @default(Ativo)
+  observacoes    String?  
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Funcionario {
+  id            Int   @id @default(autoincrement())
+  nome          String
+  email         String
+  telefone      String
+  dataCadastro  DateTime @default(now())
+  observacoes   String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Formato {
+  Composicao
+  Unitario
+}
+
+
+model Produto {
+  id              String   @id @default(cuid())
+  descricao       String
+  unidade         String    // Ex: "kg", "un", "litro"
+  estoque         Int
+  dataValidade    DateTime?
+  formato         Formato   // Enum: COMPOSICAO ou UNITARIO
+  precoCusto      Float
+  margemLucro     Float     // Em porcentagem. Ex: 25.5 = 25,5%
+  precoVenda      Float
+  codigoBarrasGTIN String
+  status          Boolean   @default(true)
+  observacoes     String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
