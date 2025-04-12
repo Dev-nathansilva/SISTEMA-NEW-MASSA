@@ -35,6 +35,10 @@ a {
   box-shadow: none;
 }
 
+.chakra-dialog__backdrop {
+  z-index: 1001;
+}
+
 .title-login {
   color: #101828;
   font-family: "Roboto";

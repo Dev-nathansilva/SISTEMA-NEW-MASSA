@@ -7,6 +7,7 @@ const VerifyTokenRoutes = require("./routes/VerifyToken");
 const clientesRoutes = require("./routes/clienteRoutes");
 const vendedoresRoutes = require("./routes/vendedoresRoutes");
 const fornecedoresRoutes = require("./routes/fornecedoresRoutes");
+const funcionariosRoutes = require("./routes/funcionariosRoutes");
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use("/api", clientesRoutes);
 app.use("/api", vendedoresRoutes);
 
 app.use("/api", fornecedoresRoutes);
+
+app.use("/api", funcionariosRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend rodando corretamente!");

@@ -99,7 +99,6 @@ model Funcionario {
   nome          String
   email         String
   telefone      String
-  dataCadastro  DateTime @default(now())
   observacoes   String?
 
   createdAt     DateTime @default(now())
