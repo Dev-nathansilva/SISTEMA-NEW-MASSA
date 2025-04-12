@@ -50,7 +50,7 @@ export default function ClientesTable({ fetchDataRef }) {
   const debouncedSearchHandler = useCallback(
     debounce((value) => {
       setDebouncedSearch(value);
-    }, 500),
+    }, 300),
     []
   );
 
@@ -228,7 +228,6 @@ export default function ClientesTable({ fetchDataRef }) {
         `http://localhost:5000/api/clientes?${params.toString()}`
       );
       const data = await response.json();
-      console.log(data);
       const mappedData = data.data.map((cliente) => ({
         id: cliente.id,
         Nome: cliente.nome,
@@ -461,6 +460,7 @@ export default function ClientesTable({ fetchDataRef }) {
           />
         ),
         size: 70,
+        minSize: 60,
       },
       // COLUNA NOME
       {
@@ -498,7 +498,7 @@ export default function ClientesTable({ fetchDataRef }) {
         header: () => renderFilterHeader("status"),
         enableSorting: true,
         enableResizing: true,
-        minSize: 200,
+        minSize: 150,
         cell: ({ getValue }) => (
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -517,23 +517,33 @@ export default function ClientesTable({ fetchDataRef }) {
         accessorKey: "Ações",
         header: "Ações",
         cell: ({ row }) => (
-          <div className="flex gap-2 text-[19px]">
-            <FiEye
-              className="cursor-pointer text-black"
-              title="Visualizar"
+          <div className="flex gap-1 text-[19px]">
+            <div
+              className="cursor-pointer bg-[#f7f7f7] hover:bg-[#dcdcdc] p-1 rounded-lg"
               onClick={() => abrirPopupComDados(row.original)}
-            />
-            <FiMail className="cursor-pointer text-black" />
-            <FiEdit className="cursor-pointer text-orange-500" />
-            <FiTrash2
-              className="cursor-pointer text-red-500"
-              onClick={() => handleDelete(row.original.id)}
-            />
+            >
+              <FiEye className=" text-black" title="Visualizar" />
+            </div>
+
+            <div className="cursor-pointer bg-[#f7f7f7] hover:bg-[#dcdcdc] p-1 rounded-lg">
+              <FiMail className="text-black" />
+            </div>
+
+            <div className="cursor-pointer bg-[#f7f7f7] hover:bg-[#dcdcdc] p-1 rounded-lg">
+              <FiEdit className="text-orange-500" />
+            </div>
+
+            <div className="cursor-pointer bg-[#f7f7f7] hover:bg-[#dcdcdc] p-1 rounded-lg">
+              <FiTrash2
+                className=" text-red-500"
+                onClick={() => handleDelete(row.original.id)}
+              />
+            </div>
           </div>
         ),
         enableResizing,
         size: 150,
-        minSize: 150,
+        minSize: 170,
       },
       // COLUNA EMAIL
       {
@@ -541,7 +551,8 @@ export default function ClientesTable({ fetchDataRef }) {
         header: "Email",
         accessorKey: "Email",
         enableHiding: true,
-        minSize: 300,
+        size: 250,
+        minSize: 150,
       },
       // COLUNA INSCRIÇÃO ESTADUAL
       {
@@ -557,49 +568,55 @@ export default function ClientesTable({ fetchDataRef }) {
         header: renderDateRangeFilterHeader,
         accessorKey: "Data de Cadastro",
         enableHiding: true,
-        minSize: 300,
+        size: 200,
+        minSize: 200,
       },
       // COLUNA ENDEREÇO
       {
         id: "Endereco",
         accessorKey: "Endereço",
         enableHiding: true,
-        minSize: 300,
+        size: 250,
+        minSize: 150,
       },
       // COLUNA COMPLEMENTO
       {
         id: "Complemento",
         accessorKey: "Complemento",
         enableHiding: true,
-        minSize: 300,
+        size: 200,
+        minSize: 150,
       },
       // COLUNA CIDADE
       {
         id: "Cidade",
         accessorKey: "Cidade",
         enableHiding: true,
-        minSize: 300,
+        size: 200,
+        minSize: 150,
       },
       // COLUNA BAIRRO
       {
         id: "Bairro",
         accessorKey: "Bairro",
         enableHiding: true,
-        minSize: 300,
+        size: 200,
+        minSize: 150,
       },
       // COLUNA CEP
       {
         id: "CEP",
         accessorKey: "CEP",
         enableHiding: true,
-        minSize: 300,
+        size: 200,
+        minSize: 150,
       },
       // COLUNA CREDITO
       {
         id: "Credito",
         accessorKey: "Credito",
         enableHiding: true,
-        minSize: 200,
+        minSize: 150,
       },
     ];
 

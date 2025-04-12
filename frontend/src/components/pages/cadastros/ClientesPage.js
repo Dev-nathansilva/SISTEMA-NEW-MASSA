@@ -119,7 +119,7 @@ export default function ClientesPage() {
           </Dialog.Root>
 
           <Button
-            className="bg-blue-600 text-white px-4 rounded-md"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-md"
             variant="solid"
             onClick={() => setModalAberto(true)}
           >
