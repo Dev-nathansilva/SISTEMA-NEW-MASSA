@@ -26,7 +26,7 @@ import {
 
 const filtrosIniciais = {
   status: [],
-  tipo: [],
+  Tipo: [],
   dataInicial: null,
   dataFinal: null,
 };
@@ -65,7 +65,7 @@ export default function ClientesTable({ fetchDataRef }) {
         ],
       },
       {
-        key: "tipo",
+        key: "Tipo",
         label: "Tipo",
         options: [
           { value: "PessoaFisica", label: "Pessoa Física" },
@@ -208,8 +208,8 @@ export default function ClientesTable({ fetchDataRef }) {
         filters.status.forEach((status) => params.append("status", status));
       }
 
-      if (filters.tipo.length > 0) {
-        filters.tipo.forEach((tipo) => params.append("tipo", tipo));
+      if (filters.Tipo.length > 0) {
+        filters.Tipo.forEach((tipo) => params.append("tipo", tipo));
       }
 
       if (filters.dataInicial) {
@@ -232,7 +232,7 @@ export default function ClientesTable({ fetchDataRef }) {
         id: cliente.id,
         Nome: cliente.nome,
         "CPF/CNPJ": cliente.documento,
-        tipo:
+        Tipo:
           {
             PessoaFisica: "Pessoa Física",
             PessoaJuridica: "Pessoa Jurídica",
@@ -396,7 +396,7 @@ export default function ClientesTable({ fetchDataRef }) {
   const [columnOrder, setColumnOrder] = useState([
     "Selecionar",
     "Nome",
-    "tipo",
+    "Tipo",
     "CPF/CNPJ",
     "Email",
     "Inscricao Estadual",
@@ -484,9 +484,9 @@ export default function ClientesTable({ fetchDataRef }) {
       },
       // COLUNA TIPO
       {
-        id: "tipo",
-        accessorKey: "tipo",
-        header: () => renderFilterHeader("tipo"),
+        id: "Tipo",
+        accessorKey: "Tipo",
+        header: () => renderFilterHeader("Tipo"),
         enableSorting: true,
         enableResizing: true,
         minSize: 200,
@@ -808,7 +808,7 @@ export default function ClientesTable({ fetchDataRef }) {
                 </span>
               </div>
               <div>
-                <strong>Tipo:</strong> {linhaSelecionada.tipo}
+                <strong>Tipo:</strong> {linhaSelecionada.Tipo}
               </div>
               <div>
                 <strong>Status:</strong>{" "}
