@@ -99,12 +99,16 @@ const createFornecedor = async (req, res) => {
   const data = req.body;
 
   try {
-    const fornecedor = await prisma.fornecedor.create({ data });
+    const result = await prisma.fornecedor.createMany({ data });
     res
       .status(201)
-      .json({ message: "Fornecedor criado com sucesso!", fornecedor });
+      .json({
+        message: "Fornecedores criados com sucesso!",
+        count: result.count,
+      });
   } catch (error) {
-    res.status(400).json({ error: "Erro ao criar fornecedor." });
+    console.error(error);
+    res.status(400).json({ error: "Erro ao criar fornecedores." });
   }
 };
 
