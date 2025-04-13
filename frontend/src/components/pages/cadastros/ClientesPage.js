@@ -1,5 +1,14 @@
 import ClientesTable from "@/Tabelas/ClientesTable";
-import { Box, Button, Dialog, Portal, CloseButton } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Dialog,
+  Portal,
+  CloseButton,
+  HStack,
+  ButtonGroup,
+} from "@chakra-ui/react";
+
 import { BsPrinterFill } from "react-icons/bs";
 import { IoPeopleSharp } from "react-icons/io5";
 import { LuPlus } from "react-icons/lu";
@@ -10,7 +19,6 @@ import ClienteModal from "@/components/Modal";
 
 export default function ClientesPage() {
   const [isExporting, setIsExporting] = useState(false);
-  const [modalAberto, setModalAberto] = useState(false);
   const fetchDataRef = useRef(null);
 
   const fetchData = async () => {
@@ -118,27 +126,74 @@ export default function ClientesPage() {
             </Portal>
           </Dialog.Root>
 
-          <Button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-md"
-            variant="solid"
-            onClick={() => setModalAberto(true)}
-          >
-            <LuPlus /> Adicionar Novo
-          </Button>
+          <Dialog.Root size="cover" placement="center" motionPreset="scale">
+            <Dialog.Trigger asChild>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-md"
+                variant="solid"
+              >
+                <LuPlus /> Adicionar Novo
+              </Button>
+            </Dialog.Trigger>
+
+            <Portal>
+              <Dialog.Backdrop />
+              <Dialog.Positioner>
+                <Dialog.Content
+                  size="cover"
+                  bg="white"
+                  borderRadius="xl"
+                  boxShadow="lg"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Dialog.Header
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <LuPlus size={20} />
+                      <Dialog.Title fontWeight="bold" fontSize="lg">
+                        Adicionar Novo Cliente
+                      </Dialog.Title>
+                    </Box>
+                    <Dialog.CloseTrigger asChild>
+                      <HStack>
+                        <CloseButton variant="subtle" colorPalette="gray" />
+                      </HStack>
+                    </Dialog.CloseTrigger>
+                  </Dialog.Header>
+
+                  <Dialog.Body pt={4} pb={6} flex="1" overflowY="auto">
+                    {/* Aqui você pode colocar o conteúdo do formulário ou importar o <ClienteModal /> */}
+                    <ClienteModal />
+                  </Dialog.Body>
+
+                  <Dialog.Footer
+                    display="flex"
+                    justifyContent="flex-end"
+                    gap={3}
+                  >
+                    <Dialog.ActionTrigger asChild>
+                      <HStack>
+                        <Button colorPalette="teal" variant="solid">
+                          Email
+                        </Button>
+                        <Button colorPalette="teal" variant="outline">
+                          Call us
+                        </Button>
+                      </HStack>
+                    </Dialog.ActionTrigger>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog.Positioner>
+            </Portal>
+          </Dialog.Root>
         </div>
       </div>
 
       <ClientesTable key={tableKey} fetchDataRef={fetchDataRef} />
-
-      <ClienteModal
-        isOpen={modalAberto}
-        onClose={() => setModalAberto(false)}
-        onClienteCriado={() => {
-          if (fetchDataRef.current) {
-            fetchDataRef.current();
-          }
-        }}
-      />
     </div>
   );
 }
