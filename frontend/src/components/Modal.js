@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { IoMdPersonAdd } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
+import { toaster } from "./ui/toaster";
 
 const dadosClientes = {
   id: "",
@@ -47,16 +48,29 @@ export default function ClienteModal({ isOpen, onClose, onClienteCriado }) {
       const result = await response.json();
 
       if (response.ok) {
-        console.log("Cliente criado com sucesso:", result.cliente);
+        toaster.create({
+          title: "Cliente Novo!",
+          description: "Cliente Criado com Sucesso",
+          type: "success",
+          duration: 3000,
+        });
         if (onClienteCriado) onClienteCriado();
         onClose();
       } else {
-        console.error("Erro ao criar cliente:", result.error);
-        alert("Erro ao criar cliente.");
+        toaster.create({
+          title: "Erro!",
+          description: `Erro ao criar cliente: ${result.error}`,
+          type: "warning",
+          duration: 3000,
+        });
       }
     } catch (error) {
-      console.error("Erro na requisição:", error);
-      alert("Erro ao conectar com o servidor.");
+      toaster.create({
+        title: "Erro!",
+        description: `Erro ao conectar com o servidor: ${error}`,
+        type: "error",
+        duration: 3000,
+      });
     }
   };
 

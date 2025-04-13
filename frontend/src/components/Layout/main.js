@@ -27,6 +27,7 @@ import ChequePage from "../pages/emissoes/ChequePage";
 import CRMPage from "../pages/CRMPage";
 import RelatoriosPage from "../pages/RelatoriosPage";
 import UsuariosPage from "../pages/UsuariosPage";
+import { Toaster } from "../ui/toaster";
 
 const pages = {
   Dashboard: <DashboardPage />,
@@ -142,6 +143,7 @@ export default function MainLayout({ user, permissions }) {
       {isRightPanelOpen && (
         <RightPanel onClose={() => setIsRightPanelOpen(false)} />
       )}
+      <Toaster />
     </Flex>
   );
 }
