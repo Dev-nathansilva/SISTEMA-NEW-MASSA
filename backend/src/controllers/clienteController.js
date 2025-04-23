@@ -110,6 +110,7 @@ const createCliente = async (req, res) => {
       count: result.count,
     });
   } catch (error) {
+    console.error(error);
     res.status(400).json({ error: "Erro ao criar cliente." });
   }
 };
@@ -125,6 +126,7 @@ const updateCliente = async (req, res) => {
     });
     res.json({ message: "Cliente atualizado com sucesso.", cliente });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: "Erro ao atualizar cliente." });
   }
 };

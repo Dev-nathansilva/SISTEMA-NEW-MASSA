@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cm9dimv3a0000vjmosuo52b4p",
+    "name": "nathan",
+    "email": "nathansilva.dev@gmail.com",
+    "password": "dev123",
+    "nivel": "padrao",
+    "passwordResetToken": null,
+    "passwordResetExpires": null
+  },
+  {
+    "id": "cm9din4s40001vjmoty8rvd07",
+    "name": "dev",
+    "email": "email.reserva.dev@gmail.com",
+    "password": "dev123",
+    "nivel": "admin",
+    "passwordResetToken": null,
+    "passwordResetExpires": null
+  }
+]
