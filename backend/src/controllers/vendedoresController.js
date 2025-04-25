@@ -78,7 +78,7 @@ const getAllVendedores = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erro ao buscar clientes." });
+    res.status(500).json({ error: "Erro ao buscar vendedores." });
   }
 };
 
@@ -86,10 +86,14 @@ const createVendedor = async (req, res) => {
   const data = req.body;
 
   try {
-    const cliente = await prisma.cliente.create({ data });
-    res.status(201).json({ message: "Cliente criado com sucesso!", cliente });
+    const result = await prisma.vendedor.createMany({ data });
+    res.status(201).json({
+      message: "Vendedores criados com sucesso!",
+      count: result.count,
+    });
   } catch (error) {
-    res.status(400).json({ error: "Erro ao criar cliente." });
+    console.error(error);
+    res.status(400).json({ error: "Erro ao criar Vendedores." });
   }
 };
 
@@ -98,13 +102,13 @@ const updateVendedor = async (req, res) => {
   const data = req.body;
 
   try {
-    const cliente = await prisma.cliente.update({
+    const vendedor = await prisma.vendedor.update({
       where: { id: Number(id) },
       data,
     });
-    res.json({ message: "Cliente atualizado com sucesso.", cliente });
+    res.json({ message: "Vendedor atualizado com sucesso.", vendedor });
   } catch (error) {
-    res.status(400).json({ error: "Erro ao atualizar cliente." });
+    res.status(400).json({ error: "Erro ao atualizar vendedor." });
   }
 };
 

@@ -6,7 +6,6 @@ const getAllFornecedores = async (req, res) => {
     page = 1,
     limit = 10,
     search = "",
-    tipo,
     status,
     dataInicial,
     dataFinal,
@@ -15,15 +14,6 @@ const getAllFornecedores = async (req, res) => {
   const skip = (Number(page) - 1) * Number(limit);
   const take = Number(limit);
   const searchTerm = search.toLowerCase();
-
-  const tipos = tipo
-    ? Array.isArray(tipo)
-      ? tipo
-      : tipo
-          .split(",")
-          .map((t) => t.trim())
-          .filter((t) => t)
-    : [];
 
   const statusList = status
     ? Array.isArray(status)
@@ -61,9 +51,18 @@ const getAllFornecedores = async (req, res) => {
           { documento: { contains: searchTerm } },
           { telefone: { contains: searchTerm } },
           { inscricaoEstadual: { contains: searchTerm } },
+
+          { endereco: { contains: searchTerm } },
+          { cidade: { contains: searchTerm } },
+          { bairro: { contains: searchTerm } },
+          { complemento: { contains: searchTerm } },
+          { cep: { contains: searchTerm } },
+
+          { nomeTitular: { contains: searchTerm } },
+          { chavePix: { contains: searchTerm } },
+          { referenciaBancaria: { contains: searchTerm } },
         ],
       },
-      ...(tipos.length > 0 ? [{ tipo: { in: tipos } }] : []),
       ...(statusList.length > 0 ? [{ status: { in: statusList } }] : []),
       ...dataFiltro,
     ],
@@ -100,12 +99,10 @@ const createFornecedor = async (req, res) => {
 
   try {
     const result = await prisma.fornecedor.createMany({ data });
-    res
-      .status(201)
-      .json({
-        message: "Fornecedores criados com sucesso!",
-        count: result.count,
-      });
+    res.status(201).json({
+      message: "Fornecedores criados com sucesso!",
+      count: result.count,
+    });
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: "Erro ao criar fornecedores." });
