@@ -39,7 +39,7 @@ enum Tipo {
 model Cliente {
   id                 Int       @id @default(autoincrement())
   nome               String
-  tipo               Tipo   // Ex: "Pessoa Física", "Empresa"
+  tipo               Tipo     @default(Empresa)// Ex: "Pessoa Física", "Empresa"
   documento          String   // CPF ou CNPJ
   email              String
   telefone           String
@@ -90,12 +90,21 @@ model Vendedor {
   email          String
   telefone       String
   comissao       Float   
-  status          Status  @default(Ativo)
+  status         Status  @default(Ativo)
   observacoes    String?  
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+
+enum Cargo {
+  Gerente
+  Assistente
+  Caminhoneiro
+  Analista
+}
+
 
 model Funcionario {
   id            Int   @id @default(autoincrement())
@@ -103,6 +112,7 @@ model Funcionario {
   email         String
   telefone      String
   observacoes   String?
+  cargo         Cargo    @default(Analista)
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

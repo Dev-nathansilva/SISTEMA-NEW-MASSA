@@ -6,7 +6,7 @@ const getAllFuncionarios = async (req, res) => {
     page = 1,
     limit = 10,
     search = "",
-    status,
+    cargo,
     dataInicial,
     dataFinal,
   } = req.query;
@@ -15,13 +15,13 @@ const getAllFuncionarios = async (req, res) => {
   const take = Number(limit);
   const searchTerm = search.toLowerCase();
 
-  const statusList = status
-    ? Array.isArray(status)
-      ? status
-      : status
+  const cargos = cargo
+    ? Array.isArray(cargo)
+      ? cargo
+      : cargo
           .split(",")
-          .map((s) => s.trim())
-          .filter((s) => s)
+          .map((t) => t.trim())
+          .filter((t) => t)
     : [];
 
   const dataFiltro = [];
@@ -51,7 +51,7 @@ const getAllFuncionarios = async (req, res) => {
           { telefone: { contains: searchTerm } },
         ],
       },
-      ...(statusList.length > 0 ? [{ status: { in: statusList } }] : []),
+      ...(cargos.length > 0 ? [{ cargo: { in: cargos } }] : []),
       ...dataFiltro,
     ],
   };
@@ -78,18 +78,19 @@ const getAllFuncionarios = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erro ao buscar clientes." });
+    res.status(500).json({ error: "Erro ao buscar funcionarios." });
   }
 };
-
 const createFuncionario = async (req, res) => {
   const data = req.body;
 
   try {
-    const cliente = await prisma.cliente.create({ data });
-    res.status(201).json({ message: "Cliente criado com sucesso!", cliente });
+    const funcionario = await prisma.funcionario.create({ data });
+    res
+      .status(201)
+      .json({ message: "Funcionário criado com sucesso!", funcionario });
   } catch (error) {
-    res.status(400).json({ error: "Erro ao criar cliente." });
+    res.status(400).json({ error: "Erro ao criar funcionário." });
   }
 };
 
@@ -98,13 +99,14 @@ const updateFuncionario = async (req, res) => {
   const data = req.body;
 
   try {
-    const cliente = await prisma.cliente.update({
+    const funcionario = await prisma.funcionario.update({
       where: { id: Number(id) },
       data,
     });
-    res.json({ message: "Cliente atualizado com sucesso.", cliente });
+    res.json({ message: "Funcionário atualizado com sucesso.", funcionario });
   } catch (error) {
-    res.status(400).json({ error: "Erro ao atualizar cliente." });
+    console.log("erro funcionario", error);
+    res.status(400).json({ error: "Erro ao atualizar funcionário." });
   }
 };
 

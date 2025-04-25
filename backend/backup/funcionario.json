@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": 1,
+    "nome": "teste",
+    "email": "teste@gmail.com",
+    "telefone": "(85) 99741-6242",
+    "observacoes": "-",
+    "cargo": "Analista",
+    "createdAt": "2025-04-25T14:06:25.860Z",
+    "updatedAt": "2025-04-25T14:05:56.057Z"
+  },
+  {
+    "id": 4,
+    "nome": "nathan",
+    "email": "email.reserva.dev@gmail.com",
+    "telefone": "(85) 99741-6242",
+    "observacoes": "teste",
+    "cargo": "Caminhoneiro",
+    "createdAt": "2025-04-25T15:44:29.908Z",
+    "updatedAt": "2025-04-25T15:45:35.647Z"
+  }
+]
