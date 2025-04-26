@@ -17,11 +17,12 @@ const getAllVendedores = async (req, res) => {
 
   const statusList = status
     ? Array.isArray(status)
-      ? status
+      ? status.map((s) => s === "true")
       : status
           .split(",")
           .map((s) => s.trim())
-          .filter((s) => s)
+          .filter((s) => s === "true" || s === "false")
+          .map((s) => s === "true")
     : [];
 
   const dataFiltro = [];
@@ -51,7 +52,9 @@ const getAllVendedores = async (req, res) => {
           { telefone: { contains: searchTerm } },
         ],
       },
-      ...(statusList.length > 0 ? [{ status: { in: statusList } }] : []),
+      ...(statusList.length === 1
+        ? [{ status: { equals: statusList[0] } }]
+        : []),
       ...dataFiltro,
     ],
   };

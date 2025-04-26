@@ -25,11 +25,6 @@ model User {
 }
 
 
-enum Status {
-  Ativo
-  Inativo
-}
-
 enum Tipo {
   PessoaFisica
   Empresa
@@ -44,7 +39,7 @@ model Cliente {
   email              String
   telefone           String
   inscricaoEstadual  String?
-  status             Status    @default(Ativo)
+  status             Boolean   @default(true)
   endereco           String?   @default("Não informado")
   complemento        String?    
   cidade             String?   @default("Não informado")
@@ -64,7 +59,7 @@ model Fornecedor {
   nome                  String
   documento             String
   cidade                String
-  status                Status  @default(Ativo)
+  status                Boolean   @default(true)
   email                 String
   telefone              String
   inscricaoEstadual     String?
@@ -90,7 +85,7 @@ model Vendedor {
   email          String
   telefone       String
   comissao       Float   
-  status         Status  @default(Ativo)
+  status         Boolean   @default(true)
   observacoes    String?  
 
   createdAt     DateTime @default(now())

@@ -7,7 +7,7 @@
     "email": "joao.silva@email.com",
     "telefone": "(11) 91234-5678",
     "inscricaoEstadual": null,
-    "status": "Ativo",
+    "status": true,
     "endereco": "Rua das Flores, 123",
     "complemento": "Apto 45",
     "cidade": "São Paulo",
