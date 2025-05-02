@@ -9,6 +9,7 @@ const vendedoresRoutes = require("./routes/vendedoresRoutes");
 const fornecedoresRoutes = require("./routes/fornecedoresRoutes");
 const funcionariosRoutes = require("./routes/funcionariosRoutes");
 const backupRoutes = require("./routes/backupRoutes");
+const produtoRoutes = require("./routes/produtoRoutes");
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use("/api", fornecedoresRoutes);
 app.use("/api", funcionariosRoutes);
 
 app.use("/api", backupRoutes);
+
+app.use("/api", produtoRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend rodando corretamente!");

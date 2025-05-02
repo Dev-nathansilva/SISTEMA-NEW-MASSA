@@ -1,18 +1,18 @@
 [
   {
-    "id": "cm9dimv3a0000vjmosuo52b4p",
+    "id": "cm9u4lbqx0000vjv8tkvu7e7c",
     "name": "nathan",
     "email": "nathansilva.dev@gmail.com",
-    "password": "dev123",
+    "password": "$2a$10$8w5nbm/u21Pga/HM.CX9N.bJleyPBhrAvXiiweNJVTL4BW24LER/m",
     "nivel": "padrao",
     "passwordResetToken": null,
     "passwordResetExpires": null
   },
   {
-    "id": "cm9din4s40001vjmoty8rvd07",
+    "id": "cm9u4lhq60001vjv8komowte8",
     "name": "dev",
     "email": "email.reserva.dev@gmail.com",
-    "password": "dev123",
+    "password": "$2a$10$1xd7aWepaBa4hmpHfkW6w.FYa2ovhNuO2ZPlSJheHZHBn4ezPj85m",
     "nivel": "admin",
     "passwordResetToken": null,
     "passwordResetExpires": null

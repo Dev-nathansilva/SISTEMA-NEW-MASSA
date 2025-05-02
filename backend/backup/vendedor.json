@@ -1,13 +1,13 @@
 [
   {
-    "id": 2,
-    "nome": "nathan",
+    "id": 6,
+    "nome": "teste",
     "email": "email.reserva.dev@gmail.com",
     "telefone": "(85) 99741-6242",
-    "comissao": 1,
-    "status": "Ativo",
-    "observacoes": "a",
-    "createdAt": "2025-04-25T03:01:34.344Z",
-    "updatedAt": "2025-04-25T03:09:11.211Z"
+    "comissao": 4,
+    "status": false,
+    "observacoes": "",
+    "createdAt": "2025-04-26T16:55:32.560Z",
+    "updatedAt": "2025-04-26T18:14:55.924Z"
   }
 ]
