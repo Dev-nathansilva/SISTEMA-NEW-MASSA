@@ -22,8 +22,9 @@ router.get("/home", authenticateToken, async (req, res) => {
         userId: user.id,
         name: user.name,
         email: user.email,
+        foto: user.fotoPerfil,
         nivel: user.nivel,
-        permissions: permissions[user.nivel] || permissions["padrao"],
+        permissions: permissions[user.nivel] || permissions["Padrão"],
       },
     });
   } catch (error) {

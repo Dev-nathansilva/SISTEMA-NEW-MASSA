@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "id": 27,
+    "codigoSKU": "SKU9344",
+    "descricao": "TOPCELL",
+    "unidade": "Un",
+    "estoque": 10,
+    "dataValidade": null,
+    "formato": "Componente",
+    "precoCusto": 0,
+    "margemLucro": 0,
+    "precoVenda": 0,
+    "codigoBarrasGTIN": "",
+    "status": true,
+    "observacoes": null,
+    "origem": null,
+    "ncm": "",
+    "cest": "",
+    "csosn": "",
+    "icmsInterno": 0,
+    "baseCalculo": 0,
+    "ipi": 0,
+    "cstPis": "",
+    "cstCofins": "",
+    "pesoBruto": 0,
+    "pesoLiquido": 0,
+    "createdAt": "2025-05-06T01:09:39.043Z",
+    "updatedAt": "2025-05-06T01:09:39.043Z"
+  }
+]

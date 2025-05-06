@@ -7,21 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Nivel {
-  admin
-  vendedor
-  padrao
-}
-
 model User {
-  id       String      @id @default(cuid())
-  name     String
-  email    String      @unique
-  password String
-  nivel    Nivel       @default(padrao)
-  passwordResetToken   String?
-  passwordResetExpires DateTime?
-  
+  id                    String      @id @default(cuid())
+  name                  String
+  email                 String      @unique
+  password              String
+  nivel                 String      @default("Padrão")
+  fotoPerfil            String?
+  telefone              String?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  passwordResetToken    String?
+  passwordResetExpires  DateTime?
 }
 
 
@@ -41,7 +38,6 @@ model Cliente {
   cep                String?   @default("00000-000")
   credito            Float?    @default(0.0)
   observacoes        String? 
-
   dataCadastro       DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
@@ -67,9 +63,7 @@ model Fornecedor {
   limiteCredito         Float?
   condicoesPagamento    String?
   observacoes           String?
-
   produtos              FornecedorProduto[]
-
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }
@@ -83,9 +77,8 @@ model Vendedor {
   comissao       Float   
   status         Boolean   @default(true)
   observacoes    String?  
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 
@@ -97,7 +90,6 @@ model Funcionario {
   telefone      String
   observacoes   String?
   cargo         String 
-
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -106,20 +98,19 @@ model Funcionario {
 
 
 model Produto {
-  id              Int   @id @default(autoincrement())
-  codigoSKU       String?
-  descricao       String
-  unidade         String    // Ex: "kg", "un", "litro"
-  estoque         Int
-  dataValidade    DateTime?
-  formato         String   // Enum: COMPOSICAO ou COMPONENTE
-  precoCusto      Float
-  margemLucro     Float     // Em porcentagem. Ex: 25.5 = 25,5%
-  precoVenda      Float
-  codigoBarrasGTIN String
-  status          Boolean   @default(true)
-  observacoes     String?
-
+  id                Int   @id @default(autoincrement())
+  codigoSKU         String?
+  descricao         String
+  unidade           String    // Ex: "kg", "un", "litro"
+  estoque           Int
+  dataValidade      DateTime?
+  formato           String   // Enum: COMPOSICAO ou COMPONENTE
+  precoCusto        Float
+  margemLucro       Float     // Em porcentagem. Ex: 25.5 = 25,5%
+  precoVenda        Float
+  codigoBarrasGTIN  String
+  status            Boolean   @default(true)
+  observacoes       String?
   origem            String?
   ncm               String?
   cest              String?
@@ -131,14 +122,11 @@ model Produto {
   cstCofins         String?
   pesoBruto         Float?
   pesoLiquido       Float?
-
   composicoes       Composicao[] @relation("ProdutoComposicao")     // Produtos que usam ESTE produto como composição
   componentes       Composicao[] @relation("ComponenteProduto")     // Componentes que compõem ESTE produto
-
   fornecedores      FornecedorProduto[]
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 
@@ -148,11 +136,8 @@ model Composicao {
   produtoId      Int
   componenteId   Int
   quantidade     Float
-
   produto        Produto @relation("ProdutoComposicao", fields: [produtoId], references: [id])
   componente     Produto @relation("ComponenteProduto", fields: [componenteId], references: [id])
-
- 
 }
 
 
@@ -160,45 +145,7 @@ model FornecedorProduto {
   id           Int     @id @default(autoincrement())
   produtoId    Int
   fornecedorId Int
-
   produto      Produto    @relation(fields: [produtoId], references: [id])
   fornecedor   Fornecedor @relation(fields: [fornecedorId], references: [id])
-
   @@unique([produtoId, fornecedorId])
 }
-
-
-
-
-// Adicionar a produto 
-// Origem  String
-// NCM
-// CEST
-// CSOSN
-// ICMS interno
-// Base de Calculo
-// IPI
-// CST PIS
-// CST COFINS
-// PESO BRUTO
-// PESO LIQUIDO
-
-
-
-// nova MODEL COMPOSICAO
-
-// id
-// PRODUTO id do produto COMPOSICAO
-// COMPONENTE id do COMPONENTE
-// QTD
-// ESTOQUE ATUAL  -  é o mesmo estoque do componente que ta na tabela de produtos
-
-
-
-// cada produto da pra vincular com um fornecedor
-
-// FORNECEDOR - PRODUTO  
-
-// id 
-// produto id   
-// fornecedor id 
